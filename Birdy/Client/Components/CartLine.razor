@@ -1,0 +1,184 @@
+﻿@inject HttpClient http
+@inject ILocalStorageService localStorageService
+@inject CartService CartService
+@using System.Text.Json
+
+
+    @if (Item is not null)
+    {
+        <figure class="cart-line">
+            <a href="/products/@product?.Category?.Url/@product?.Id" class="cart-line__image noselect">
+                <img src="@product?.ImageSource" alt="@product?.Name" />
+            </a>
+            <figcaption class="cart-line__caption">
+                <h2 class="cart-line__name">@product?.Name</h2>
+                @if (Item.Weight != 0)
+                {
+                    <p class="cart-line__weight additional noselect">Вес: @(Item.Weight < 1000 ? $"{Item.Weight} г" : $"{Item.Weight/1000} кг")</p>
+                }
+                <p class="cart-line__discount additional noselect">Скидка: <span class="@((discount is not null) ? "discount" : "")">@((discount is null) ? "нет" : discount.Value + "%")</span></p>
+                <p class="cart-line__price noselect">Цена за 1 шт: @productPrice?.Price руб.</p>
+            </figcaption>
+            <div class="cart-line__quantity">
+                <Quantity @bind-Value="@Item.Quantity" OnIncrement="OnIncrementQuantityAsync" OnDecrement="OnDecrementQuantityAsync" @key="Item.Id"/>
+            <p class="cart-line__total noselect">Итого: <span class="@((discount is not null) ? "discount" : "")">@Item.Price</span> руб.</p>
+            </div>
+
+        </figure>
+    }
+
+
+@code {
+    private Product? product = new();
+    private Discount? discount = new();
+    private ProductPrice? productPrice = new();
+    JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+    [Parameter]
+    public CartItem? Item { get; set; }
+
+    [CascadingParameter]
+    public CartLines? cartLines { get; set; }
+
+    [Parameter]
+    public EventCallback<ComponentBase> OnDelete { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = await GetProductAsync();
+        productPrice = product?.ProductsPrices?.First(pp => pp.Weight == Item?.Weight);
+
+        if (product is not null)
+        {
+            discount = await GetDiscountAsync();
+        }
+        else
+        {
+            discount = null;
+            productPrice = null;
+        }
+    }
+
+    private async Task DeleteSelf()
+    {
+        await OnDelete.InvokeAsync(this);
+    }
+
+    private async Task<Product?> GetProductAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{AppData.BaseUri}/api/products/getbyid/{Item.ProductId}");
+        var response = await http.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            product = await response.Content.ReadFromJsonAsync<Product>(options);
+            return product;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private async Task<Discount?> GetDiscountAsync()
+    {
+        int ppId = productPrice.Id;
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{AppData.BaseUri}/api/discount/getbyppid/{ppId}");
+        var response = await http.SendAsync(request);
+        var result = await response.Content.ReadAsStringAsync();
+
+        if (result.Equals("null"))
+        {
+            return null;
+        }
+        else
+        {
+            discount = await response.Content.ReadFromJsonAsync<Discount>(options);
+            return discount;
+        }
+    }
+
+    private async Task OnIncrementQuantityAsync()
+    {
+        if (Item?.Quantity < 100)
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id);
+
+            int response = await CartService.IncrementQuantityAsync(Item.Id);
+
+            if (response == 1)
+            {
+                item.Quantity += 1;
+                if (discount is null)
+                {
+                    item.Price = productPrice.Price * Item.Quantity;
+                    Item.Price = item.Price;
+                }
+                else
+                {
+                    item.Price = (productPrice.Price - (productPrice.Price * discount.Value / 100)) * Item.Quantity;
+                    Item.Price = item.Price;
+                }
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                StateHasChanged();
+                cartLines.UpdateTotal();
+            }
+        }
+    }
+
+    private async Task OnDecrementQuantityAsync()
+    {
+        if (Item.Quantity == 0)
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id);
+            int response = await CartService.DeleteItemAsync(Item.Id);
+
+            if (response == 1)
+            {
+                token.Cart.Items.Remove(item);
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                await CartService.UpdateCounter();
+                cartLines?.UpdateTotal();
+                cartLines?.RemoveCartItem(Item);
+            }
+        }
+        else
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id);
+            int response = await CartService.DecrementQuantityAsync(Item.Id);
+
+            if (response == 1)
+            {
+                item.Quantity -= 1;
+
+                if (discount is null)
+                {
+                    item.Price = productPrice.Price * Item.Quantity;
+                    Item.Price = item.Price;
+                }
+                else
+                {
+                    item.Price = (productPrice.Price - productPrice.Price * discount.Value / 100) * Item.Quantity;
+                    Item.Price = item.Price;
+                }
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                StateHasChanged();
+                cartLines?.UpdateTotal();
+            }
+        }
+    }
+}

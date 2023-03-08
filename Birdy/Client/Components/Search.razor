@@ -1,0 +1,96 @@
+﻿@inject HttpClient http
+@using System.Text.Json
+@inject NavigationManager nav
+@inject ILocalStorageService localStorageService
+
+<div class="search">
+    <form method="get" action="search" class="search-form">
+        <div class="search-form__container">
+            <input type="search" class="search-form__input" 
+            @bind-value="searchString" 
+            @oninput="OnInputHandler" @onclick:stopPropagation @ref="input" @onkeypress="OnKeyPressHandler" @onkeypress:stopPropagation 
+            @onclick="OnInputClick" @onfocusout="OnFocusOutHandler" />
+            <button type="button" aria-label="Поиск" class="search-form__button" tabindex="-1">
+                <img src="images/icons/search.svg" alt="Поиск" tabindex="-1" />
+            </button>
+        </div>
+    </form>
+    @if (foundProducts is not null && foundProducts?.Count > 0)
+    {
+        <div class="search__items-container noselect" tabindex="-1">
+            <ul class="search__items" tabindex="-1">
+                @foreach (Product p in foundProducts)
+                {
+                    string link = $"/products/{p?.Category?.Url}/{p?.Id}";
+
+                    <li @key="p">
+                        <a href="@link" @onclick="()=> nav.NavigateTo(link, true)" @onclick:preventDefault>
+                        <figure class="search__item">
+                            <img src="@p.ImageSource" alt="@p.Name" />
+                            <figcaption><p class="search__item_name">@p.Name</p><p class="search__item_manufacturer">@p.Manufacturer</p></figcaption>
+                            <p class="search__item_deescription">@p.Description</p>
+                            </figure>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+
+@code {
+    private ElementReference input;
+    private string? searchString = String.Empty;
+    private List<Product>? foundProducts = new();
+    private int seconds = 3;
+    JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+    [Parameter]
+    public EventCallback OnInputClick { get; set; }
+
+    private async Task OnInputHandler(ChangeEventArgs args)
+    {
+        if (seconds == 3)
+        {
+            searchString = args?.Value?.ToString();
+
+            if (searchString?.Length >= 3)
+            {
+                var response = await http.GetFromJsonAsync<List<Product>>($"api/search/{searchString}", options);
+
+                if (response is not null) foundProducts = response;
+
+                await StartTimerAsync();
+            }
+        }
+    }
+
+    public async Task StartTimerAsync()
+    {
+        while (seconds > 0)
+        {
+            seconds--;
+            await Task.Delay(1000);
+        }
+        seconds = 3;
+    }
+
+    private async Task OnKeyPressHandler(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            if (foundProducts is not null && foundProducts.Count > 0)
+            {
+                await localStorageService.SetAsync("SearchResults", foundProducts);
+                foundProducts.Clear();
+                nav.NavigateTo("/search", true);
+            }
+        }
+    }
+
+    private void OnFocusOutHandler()
+    {
+        searchString = string.Empty;
+    }
+}

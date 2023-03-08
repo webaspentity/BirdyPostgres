@@ -1,0 +1,18 @@
+﻿<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    private bool _authorized = false;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    public bool Authorized { 
+        get => _authorized; 
+        set {
+            _authorized = value;
+            StateHasChanged();
+        } 
+    }
+}

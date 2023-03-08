@@ -1,0 +1,63 @@
+﻿<div class="quantity noselect">
+    <label class="quantity__label">Количество:</label>
+    <div class="quantity__counter" style="background-color: transparent">
+        <button class="quantity__btn noselect" type="button" aria-label="Уменьшить количество" @onclick="Decrement" disabled="@disabled">-</button>
+        <input type="number" min="0" max="99" 
+            @bind=Value 
+            disabled tabindex="-1" style="z-index:0" />
+        <button class="quantity__btn noselect" type="button" aria-label="Увеличить количество" @onclick="Increment" disabled="@disabled">+</button>
+    </div>
+</div>
+
+@code {
+    private int counterValue;
+    private bool disabled = false;
+
+    [Parameter]
+    public int Value 
+    { 
+        get => counterValue;
+        set{
+            if (value >= 0 && value < 100){
+                counterValue = value;
+            }
+        } 
+    }
+
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnIncrement { get; set; }
+
+    [Parameter]
+    public EventCallback OnDecrement { get; set; }
+
+    private async Task Decrement()
+    {
+        if (Value != 0)
+        {
+            disabled = true;
+
+            Value--;
+            await ValueChanged.InvokeAsync(Value);
+            await OnDecrement.InvokeAsync();
+
+            disabled = false;
+        }
+    }
+
+    private async Task Increment()
+    {
+        if (Value != 99)
+        {
+            disabled = true;
+
+            Value++;
+            await ValueChanged.InvokeAsync(Value);
+            await OnIncrement.InvokeAsync();
+
+            disabled = false;
+        }
+    }
+}

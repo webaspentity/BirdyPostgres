@@ -1,0 +1,41 @@
+﻿@page "/paymentsuccess"
+@inject ILocalStorageService localStorageService
+@inject HttpClient http
+@inject CartService CartService
+@inject NavigationManager nav
+@inject IJSRuntime js
+
+<Modal @ref="modal" OnClose="()=> nav.NavigateTo(cartUrl)">
+    <div class="order-success">
+        <h2 class="order-success__title">Заказ успешно оформлен.</h2>
+        <p class="order-success__thanks">Спасибо!</p>
+    </div>
+</Modal>
+
+@code {
+    private Modal? modal;
+    private string cartUrl = "/cart";
+
+    protected override async Task OnInitializedAsync()
+    {
+            Order? order = await localStorageService.GetAsync<Order>(nameof(Order));
+
+            if (order is not null)
+            {
+                order.IsPaid = true;
+                var response = await http.PostAsJsonAsync("api/order/add", order);
+                var result = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+                    token?.Cart?.Items?.Clear();
+                    await localStorageService.SetAsync(nameof(Token), token);
+                    await localStorageService.RemoveAsync(nameof(Order));
+                    await CartService.UpdateCounter();
+                    modal.Open();
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,368 @@
+﻿.profile {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 2em 1em;
+    box-sizing: border-box;
+}
+
+    .profile p {
+        margin: 0;
+    }
+
+.profile__content {
+    display: grid;
+    grid-template-areas:
+        'edit edit'
+        'avatar data'
+        'address address'
+        '. logout';
+    grid-row-gap: 2em;
+    grid-column-gap: 2em;
+    flex: 1 1 100%;
+    max-width: 50em;
+}
+
+.logout {
+    grid-area: logout;
+    padding: 0.7em;
+    font-size: 1.6em;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    background-color: #2e2e2e;
+    border-radius: 10px;
+    transition: .2s ease;
+}
+
+    .logout:hover, .logout:focus {
+        color: #2e2e2e;
+        background-color: #FFD896;
+        outline: none;
+    }
+
+.profile__image {
+    grid-area: avatar;
+    width: 13em;
+    height: 13em;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+    .profile__image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.profile__data {
+    grid-area: data;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5em;
+    justify-content: space-between;
+}
+
+.profile__name {
+    font-size: 1.8em;
+    font-weight: 600;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.profile__telephone, .profile__email {
+    font-size: 1.6em;
+    font-weight: 500;
+    overflow: hidden;
+    max-width: 20em;
+    box-sizing: border-box;
+}
+
+.profile__address {
+    grid-area: address;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+}
+
+    .profile__address span, .profile p {
+        font-style: normal;
+    }
+
+    .profile__address span {
+        font-size: 1.4em;
+        font-weight: 500;
+        color: #828282;
+    }
+
+    .profile__address p {
+        font-size: 1.6em;
+        color: #fff;
+    }
+
+    .profile__address address {
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.8em;
+        background-color: #3ecf5e;
+        padding: 1.5em 2em;
+        border-radius: 10px;
+    }
+
+.profile__edit {
+    grid-area: edit;
+    justify-self: end;
+    width: 1.875em;
+    height: 1.875em;
+    padding: 1.5em;
+    border: 0;
+    border-radius: 50%;
+    background: url("data:image/svg+xml,%3Csvg width='19' height='19' viewBox='0 0 19 19' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1.13403 11.4956L11.2284 1.60065C12.5271 0.327566 14.6336 0.327566 15.9323 1.60065L17.2806 2.92229C18.5793 4.19537 18.5793 6.26026 17.2806 7.53334L7.14647 17.4673C6.56698 18.0353 5.78132 18.3541 4.96127 18.3541H0.81098C0.425432 18.3541 0.115609 18.0427 0.125218 17.6649L0.229616 13.5599C0.250372 12.784 0.574239 12.0443 1.13403 11.4956ZM16.3106 3.87325L14.9623 2.5516C14.1994 1.80372 12.9615 1.80372 12.1986 2.5516L11.4148 3.31986L15.5273 7.35022L16.3106 6.58239C17.0736 5.83451 17.0736 4.62113 16.3106 3.87325ZM2.10426 12.4465L10.4447 4.27081L14.5572 8.30117L6.17646 16.5163L6.06499 16.6164C5.75709 16.8692 5.36701 17.0092 4.96138 17.0092L1.51412 17.0087L1.60123 13.5942C1.61276 13.1634 1.79309 12.7515 2.10426 12.4465ZM18.875 17.6817C18.875 17.3104 18.5679 17.0093 18.189 17.0093H11.0323L10.9392 17.0155C10.6044 17.06 10.3463 17.3413 10.3463 17.6817C10.3463 18.0531 10.6534 18.3542 11.0323 18.3542H18.189L18.2821 18.348C18.6169 18.3035 18.875 18.0222 18.875 17.6817Z' fill='%233FCF5E'/%3E%3C/svg%3E") center no-repeat;
+}
+
+    .profile__edit:hover {
+        cursor: pointer;
+    }
+
+    .profile__edit:focus {
+        background-color: #569482;
+        outline: none;
+    }
+
+
+/*=====FORM=====*/
+.form {
+}
+
+.form__fieldset {
+    padding: 4.5em 2em 0 2em;
+    display: grid;
+    grid-template-areas:
+        'name name'
+        'telephone telephone'
+        'password password'
+        'address address'
+        'email email'
+        '. button';
+    grid-template-columns: 1fr 1fr;
+    grid-row-gap: 2.5em;
+    grid-column-gap: 7em;
+    margin: 0 auto;
+    border: none;
+    width: 65em;
+    max-width: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.form__link {
+    grid-area: link;
+}
+
+.form__button {
+    grid-area: button;
+}
+
+.form__element_telephone {
+    grid-area: telephone;
+}
+
+.form__element_password {
+    grid-area: password;
+}
+
+.form__element_name {
+    grid-area: name;
+}
+
+.form__element_address {
+    grid-area: address;
+}
+
+.form__element_email{
+    grid-area: email;
+}
+
+.form__legend {
+    font-size: 2.4em;
+    font-weight: 600;
+}
+
+.form__element {
+    position: relative;
+}
+
+    .form__element ::deep .form__input {
+        padding: 0.8333333em 1.1111111em;
+        background-color: #f2f2f2;
+        font-size: 1.8em;
+        border-radius: 5px;
+        border: 1px solid #bdbdbd;
+        transition: .4s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+.form__label {
+    padding: 0.2em 0.5em;
+    border-radius: 10px;
+    font-size: 1.8em;
+    color: #828282;
+    position: absolute;
+    left: 1.1111111em;
+    top: 0.7333333em;
+    transition: .4s ease;
+    user-select: none;
+}
+
+.form__element ::deep .form__input:focus {
+    background-color: #fff;
+}
+
+    .form__element ::deep .form__input:focus + .form__label,
+    .form__label.active {
+        left: 0;
+        top: -1.7em;
+        background-color: #333;
+        color: #fff;
+    }
+
+.form__element ::deep .form__input:focus {
+    outline: none;
+    box-shadow: 4px 6px #333333d5;
+    transform: translate3d(-0.1em,0,0);
+}
+
+.form__error {
+    font-size: 1.4em;
+    color: lightcoral;
+    padding: 0.4em 0 0.7em 0;
+}
+
+.form__link,
+.form__button {
+    padding: 0.9375em;
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+    transition: .4s ease;
+    font-size: 1.6em;
+    font-family: 'Gilroy', sans-serif;
+    font-weight: 600;
+}
+
+.form__link {
+    border: 1px solid #bdbdbd;
+    background-color: #fff;
+}
+
+.form__button {
+    background-color: mediumseagreen;
+    color: #fff;
+}
+
+.form__link:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+.form__button:hover {
+    background-color: seagreen;
+}
+
+.form__link:hover,
+.form__button:hover {
+    cursor: pointer;
+}
+
+.profile-section{
+    animation: loading .4s ease;
+}
+
+.profile-section ::deep .container {
+    display: grid;
+    grid-row-gap: 1.5em;
+}
+
+.profile__orders {
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+    .profile__orders h2 {
+        padding: 1em;
+        font-size: 1.8em;
+        font-weight: 400;
+    }
+
+.orders {
+    font-size: 1.8em;
+    list-style-type: none;
+    padding: 0 1em;
+}
+
+.orders__empty {
+    color: grey;
+}
+
+.empty {
+    display: block;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    min-height: 1.8em;
+}
+
+.eye {
+    width: 3em;
+    height: 3em;
+    background-color: transparent;
+    border-radius: 50%;
+    position: absolute;
+    top: 0.4em;
+    right: 0.4em;
+    padding: 0;
+    border: none;
+}
+
+    .eye:hover {
+        cursor: pointer;
+    }
+
+    .eye:focus {
+        outline: none;
+    }
+
+@media only screen and (max-width: 32.5em) {
+    .profile__content {
+        grid-template-areas:
+            'edit'
+            'avatar'
+            'data'
+            'address'
+            'logout';
+        grid-column-gap: unset;
+    }
+
+    .profile__image {
+        justify-self: center;
+    }
+
+    .profile__telephone, .profile__email, .profile__name {
+        text-align: center;
+        max-width: calc(100vw - 50px);
+    }
+}
+
+@keyframes loading {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,172 @@
+﻿@page "/login"
+@inject NavigationManager NavigationManager
+@inject HttpClient http
+@inject IJSRuntime js
+@using System.Text.Json
+
+<PageTitle>Вход | Регистрация</PageTitle>
+
+<AuthorizeView Roles="Anonym">
+    <Authorized>
+        <section class="login-page">
+            <Container>
+                <EditForm class="form noselect" method="post" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="OnInvalidSubmit" Model="model" Context="Login">
+                    <DataAnnotationsValidator />
+                    <fieldset class="form__fieldset">
+                        <legend class="form__legend">@title</legend>
+
+                        <div class="form__element form__element_email">
+                            <input @bind-value="@model.Email" class="form__input" @bind-value:event="oninput" @ref="emailInput" />
+                            <label class=@((String.IsNullOrEmpty(model.Email)) ? "form__label": "form__label active") @onclick="OnEmailLabelClick">Электронная почта</label>
+                            <div class="form__error">
+                                <ValidationMessage For="@(() => model.Email)" />
+                            </div>
+                        </div>
+
+                        <div class="form__element form__element_password">
+                            <input @bind-value="@model.Password" class="form__input" @bind-value:event="oninput" type="@(showPassword ? "text" : "password")" @ref="passwordInput" minlength="8" maxlength="25"/>
+                            <label class=@((String.IsNullOrEmpty(model.Password)) ? "form__label" : "form__label active") @onclick="FocusOnPasswordInput">Пароль</label>
+                                <button type="button" class="eye" @onclick="OnEyeClick" @onfocus="FocusOnPasswordInput">
+                                    <img alt="Показать пароль" src="@(showPassword ? "/images/icons/openedeye.png" : "/images/icons/closedeye.png")" />
+                                </button>
+                            <div class="form__error">
+                                <ValidationMessage For="@(() => model.Password)" />
+                            </div>
+                        </div>
+                        <button type="button" aria-label="Зарегистрироваться" class="form__toogler" @onclick="LeftControlClick">@leftControl</button>
+                        <button type="submit" aria-label="Войти в аккаунт" class="form__button">@rightControl</button>
+                    </fieldset>
+                </EditForm>
+            </Container>
+        </section>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView Roles="Administrator, CommonUser">
+    <Authorized>
+        @{
+            <Redirect To="/" ForceLoad=false />
+        }
+    </Authorized>
+</AuthorizeView>
+
+<Modal @ref="modal">
+    <p class="message">@badRequestMessage</p>
+</Modal>
+
+@code {
+    private bool makeRegistration = false;
+    LoginModel model = new LoginModel();
+    User? user = default!;
+    private string? title;
+    private string? leftControl;
+    private string? rightControl;
+    private ElementReference emailInput;
+    private ElementReference passwordInput;
+    private bool showPassword = false;
+    private Modal? modal;
+    private string? badRequestMessage;
+
+    [Inject] ILocalStorageService localStorageService { get; set; } = default!;
+
+    private async Task OnValidSubmit()
+    {
+        if (makeRegistration) await Task.Run(() => RegisterAsync());
+        else await LoginAsync();
+    }
+    private void OnInvalidSubmit() { }
+
+    private void ConfigureForm()
+    {
+        title = (makeRegistration) ? "Регистрация" : "Вход в аккаунт";
+        leftControl = (makeRegistration) ? "Войти в аккаунт" : "Зарегистрироваться";
+        rightControl = (makeRegistration) ? "Зарегистрироваться" : "Войти в аккаунт";
+    }
+
+    private void LeftControlClick()
+    {
+        makeRegistration = !makeRegistration;
+        ConfigureForm();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ConfigureForm();
+    }
+
+    private async Task OnEmailLabelClick()
+    {
+        await emailInput.FocusAsync();
+    }
+
+    private async Task FocusOnPasswordInput()
+    {
+        await passwordInput.FocusAsync();
+    }
+
+    protected async Task LoginAsync()
+    {
+        var response = await http.PostAsJsonAsync("api/login", model);
+        var result = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            User? user = JsonSerializer.Deserialize<User>(result, options);
+            await LoginAsUserAsync(user!);
+            return;
+        }
+
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            badRequestMessage = result;
+            modal?.Open();
+        }
+    }
+
+    protected async Task LoginAsUserAsync(User user)
+    {
+        var token = new Token
+            {
+                Id = user.Id,
+                Role = user.Role,
+                Address = user.Profile?.UserAddress,
+                Email = user.LoginData?.Email!,
+                LoginId = user.LoginData.Id,
+                Password = user.LoginData.Password!,
+                UserName = user.Profile?.UserName,
+                Telephone = user.Profile?.UserTelephone,
+                ProfileId = user.Profile.Id, 
+                Cart = user.Cart 
+            };
+
+        await localStorageService.SetAsync(nameof(Token), token);
+        NavigationManager.NavigateTo("/", true);
+    }
+
+    protected async Task RegisterAsync()
+    {
+        var response = await http.PostAsJsonAsync("api/register", model);
+        var result = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            user = JsonSerializer.Deserialize<User>(result, options);
+            await LoginAsUserAsync(user!);
+            return;
+        }
+
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            badRequestMessage = result;
+            modal?.Open();
+        }
+    }
+
+    private void OnEyeClick()
+    {
+        showPassword = !showPassword;
+    }
+
+}

@@ -1,0 +1,31 @@
+﻿@page "/cart"
+@attribute [Authorize(Roles = "CommonUser")]
+@inject ILocalStorageService localStorageService
+@inject CartService CartService
+
+<PageTitle>Корзина</PageTitle>
+
+<Container>
+    @if(items is not null && items.Count > 0)
+    {
+        <section class="cart-section">
+            <CartLines Items="@items" />
+            </section>
+    }
+    else
+    {
+        <div class="empty-cart"><img src="/images/icons/cart_empty.svg" alt="background"/></div>
+    }
+</Container>
+
+
+@code{
+    private List<CartItem>? items = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+        items = await CartService.GetCartItemsByIdAsync(token.Cart.Id);
+        token.Cart.Items = items;
+    }
+}

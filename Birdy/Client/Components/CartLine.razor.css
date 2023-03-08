@@ -1,0 +1,116 @@
+﻿.cart-line {
+    display: grid;
+    grid-template-columns: 10em 1fr 15em;
+    grid-template-areas:
+        'image caption quantity';
+    grid-column-gap: 2em;
+    font-size: 1.6em;
+    padding: 1.5em 0;
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.17);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.17);
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.17);
+    padding: 0.75em;
+    align-items: center;
+    border-radius: 15px;
+    margin: 0;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.cart-line__image {
+    grid-area: image;
+    width: 10em;
+    height: 10em;
+    overflow: hidden;
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    border-radius: 40%;
+}
+
+    .cart-line__image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cart-line__caption {
+        grid-area: caption;
+    }
+
+.cart-line__weight{
+
+}
+
+.cart-line__discount {
+}
+
+.cart-line__price{}
+
+.cart-line__quantity {
+    grid-area: quantity;
+}
+
+.cart-line__total {
+    font-size: 1.2em;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+}
+
+.additional {
+    font-size: 1em;
+    font-weight: 600;
+    color: #bdbdbd;
+}
+
+.discount{
+    color: blueviolet;
+}
+
+.empty{
+    font-size: 1.8em;
+    text-align: center;
+}
+
+@media (max-width: 48em) {
+    .cart-line {
+        grid-template-areas:
+            'image caption'
+            'quantity quantity';
+        grid-template-columns: auto 1fr;
+        grid-row-gap: 2em;
+    }
+    .cart-line ::deep .quantity{
+        align-items:center;
+    }
+
+    .cart-line__total{
+        text-align: center;
+    }
+}
+
+@media (max-width:38.75em) {
+    .cart-line {
+        grid-template-areas:
+            'image'
+            'caption'
+            'quantity';
+        grid-template-columns: 1fr;
+    }
+
+    .cart-line__image {
+        justify-self: center;
+    }
+
+    .cart-line ::deep .quantity {
+        align-items: center;
+    }
+
+    .cart-line__total, .cart-line__weight, .cart-line__name, .cart-line__discount, .cart-line__price {
+        text-align: center;
+    }
+}

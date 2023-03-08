@@ -1,0 +1,22 @@
+{
+  "name": "Birdy",
+  "short_name": "Birdy",
+  "start_url": "./",
+  "description": "Веб-приложение по дистрибуции товаров для птиц",
+  "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#363A4D",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}

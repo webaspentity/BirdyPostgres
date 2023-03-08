@@ -1,0 +1,71 @@
+﻿@inject NavigationManager nav
+@inject IJSRuntime js
+@inject CartService CartService
+
+<div class="account">
+    <AuthorizeView Roles="CommonUser">
+        <Authorized>
+            <button class="account__cart" type="button" aria-label="Корзина" @onclick="GoToCart">
+                <img src="images/icons/cart.svg" alt="Корзина" />
+                <span class="counter" id="cart-counter">@count</span>
+            </button>
+        </Authorized>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="Administrator, CommonUser">
+        <Authorized>
+            <button class="account__profile" type="button" aria-label="Профиль" role="link" @onclick="GoToProfile">
+                <img src="images/icons/account_active.svg" alt="Профиль" />
+            </button>
+        </Authorized>
+        <NotAuthorized>
+            <button class="account__link" role="link" @onclick="GoToLogin" aria-label="Страница входа" label><img src="images/icons/account.svg" alt="Профиль" /></button>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    private DotNetObjectReference<Account>? objRef;
+    private int count;
+
+    [Parameter]
+    public EventCallback OnAccountElementClick { get; set; }
+
+    [Inject] ILocalStorageService localStorageService { get; set; } = default!;
+
+    private async Task GoToLogin()
+    {
+        nav.NavigateTo("/login");
+        if (OnAccountElementClick.HasDelegate) await OnAccountElementClick.InvokeAsync();
+    }
+
+    private async Task GoToProfile()
+    {
+        nav.NavigateTo("/profile");
+        if (OnAccountElementClick.HasDelegate) await OnAccountElementClick.InvokeAsync();
+    }
+
+    private async Task GoToCart()
+    {
+        nav.NavigateTo("/cart");
+        if (OnAccountElementClick.HasDelegate) await OnAccountElementClick.InvokeAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await js.InvokeVoidAsync("setAccount", objRef);
+
+            await CartService.UpdateCounter();
+        }
+    }
+
+    [JSInvokable]
+    public void SetCounter(int value)
+    {
+        count = value;
+        StateHasChanged();
+    }
+}

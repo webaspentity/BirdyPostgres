@@ -1,0 +1,81 @@
+﻿@page "/products/{category}/{id}"
+@using System.Text.Json
+@inject HttpClient http
+@inject CartService CartService
+
+<PageTitle>Продукт</PageTitle>
+
+<div class="object-container">
+    @if(card is not null)
+    {
+        <DetailSection Item=@card IsProduct=true Type="typeof(CardModel)" />
+    }
+</div>
+
+@code{
+    private string? category;
+    private string? id;
+    private Product? product;
+    private CardModel? card;
+
+    [Parameter]
+    public string? Id
+    {
+        get => id;
+        set
+        {
+            id = value;
+        }
+    }
+
+    [Parameter]
+    public string? Category
+    {
+        get => category;
+        set
+        {
+            category = value;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        product = await http.GetFromJsonAsync<Product>($"api/products/getbyid/{Id}", options);
+
+        if (product is not null)
+        {
+            card = new CardModel
+                {
+                    ProductId = product.Id,
+                    Href = $"/products/{product.Category?.Url}/{product.Id}",
+                    Image = new ImageModel { Source = product.ImageSource, Alt = product.Name },
+                    Quantity = await CartService.GetCartItemQuantity(product.Id),
+                    Remark = "Размер птицы: " + ((product.BirdSize is null) ? "не имеет значения" : (product.BirdSize.ToLower())),
+                    Title = product.Name,
+                    Weight = product.ProductsPrices.First().Weight,
+                    InStock = product.ProductsPrices.First().InStock,
+                    Description = product.Description,
+                    Theme = ThemeType.Light,
+                    WeightsAndDiscounts = new(),
+                    WeightsAndPrices = new(),
+                    WeightsAndStocks = new()
+                };
+
+            if (product.ProductsPrices is not null)
+            {
+                foreach (ProductPrice pp in product.ProductsPrices)
+                {
+                    card.WeightsAndPrices[pp.Weight] = pp.Price;
+                    card.WeightsAndStocks[pp.Weight] = pp.InStock;
+
+                    if (pp.Discounts is not null && pp.Discounts.Count > 0)
+                    {
+                        card.WeightsAndDiscounts[pp.Weight] = pp.Discounts.First().Value;
+                    }
+
+                }
+            }
+        }
+    }
+}

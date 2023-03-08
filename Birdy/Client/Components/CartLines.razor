@@ -1,0 +1,45 @@
+﻿@inject HttpClient http
+@using System.Text.Json
+@inject CartService CartService
+@inject ILocalStorageService localStorageService
+
+<CascadingValue Value="this">
+    @if (Items is not null && Items.Count > 0)
+    {
+        <div class="products">
+            @foreach (CartItem item in Items)
+            {
+                <CartLine Item="@item" @key="item" />
+            }
+            
+            <div class="products__total">
+                <a href="/order" class="products__link noselect">Оформить: @total руб.</a>
+            </div>
+        </div>
+    }
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public List<CartItem>? Items { get; set; }
+    private int cartId;
+    private decimal total;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Token ? token = await localStorageService.GetAsync<Token>(nameof(Token));
+        cartId = token.Cart.Id;
+        total = await CartService.GetTotalCostAsync(cartId);
+    }
+
+    public async Task UpdateTotal()
+    {
+        total = await CartService.GetTotalCostAsync(cartId);
+        StateHasChanged();
+    }
+
+    public async Task RemoveCartItem(CartItem item)
+    {
+        Items?.Remove(item);
+    }
+}

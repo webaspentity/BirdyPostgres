@@ -1,0 +1,14 @@
+﻿@page "/catalog"
+
+<PageTitle>Каталог</PageTitle>
+
+<Container>
+    <Breadcrumb Path="@breadcrumbs" />
+</Container>
+
+@code {
+    private List<LinkModel> breadcrumbs = new List<LinkModel>() {
+        new() { Url = "/", Text = "Главная" },
+        new() { Url = "/catalog", Text = "Каталог" }
+    };
+}

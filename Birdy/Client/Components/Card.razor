@@ -1,0 +1,241 @@
+﻿@inject ILocalStorageService localStorageService
+@inject CartService CartService
+
+@if (Item is not null)
+{
+    <figure class="card @((Theme == ThemeType.Light) ? "card_white" : "card_grey")">
+
+        <a class="card__image" href="@Item?.Href" tabindex="0">
+            <img src="@Item.Image.Source" alt="@Item.Image.Alt" class="noselect" />
+        </a>
+
+        <figcaption class="card__title">
+            @Item?.Title
+            <span class="noselect">@(Item?.Remark)</span>
+        </figcaption>
+
+        @if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+        {
+            <p class="cart__price noselect">
+                <span class="line-through small noselect">
+                    @(WeightsAndQuantity.ContainsKey(Item.Weight) ? Item.WeightsAndPrices[Item.Weight]*WeightsAndQuantity[Item.Weight] : Item.WeightsAndPrices[Item.Weight])
+                    </span>
+                <span class="line-discount noselect">
+                    @(WeightsAndQuantity.ContainsKey(Item.Weight) ? 
+                    (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100)*WeightsAndQuantity[Item.Weight] :
+                        (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100)
+                    )
+                </span> руб.
+            </p>
+        }
+        else
+        {
+            <p class="cart__price">
+                <span class="noselect">
+                    @(WeightsAndQuantity.ContainsKey(Item.Weight) ? Item.WeightsAndPrices[Item.Weight] * WeightsAndQuantity[Item.Weight] : Item.WeightsAndPrices[Item.Weight]) руб.
+                    </span>
+            </p>
+        }
+
+        @if (Item.WeightsAndPrices.Count > 1)
+        {
+            <EditForm Model="Item">
+                <InputRadioGroup @bind-Value="Item.Weight" Name="weight">
+                    <div class="card__radio">
+                        @foreach (KeyValuePair<int, decimal> kvp in Item.WeightsAndPrices)
+                        {
+                            <label class=@((kvp.Key == Item.Weight) ? "card__weight-label checked noselect" : "card__weight-label noselect") tabindex="0">
+                                <InputRadio TValue="int" Value="@kvp.Key" aria-hidden="true" Name="weight"/>@(kvp.Key < 1000 ? $"{kvp.Key} г" : (((int)(kvp.Key / 1000)).ToString() + " кг"))
+                                </label>
+                        }
+                    </div>
+                </InputRadioGroup>
+                </EditForm>
+        }        
+
+        <div class="card__controls">
+            <a href="@Item.Href" class="card__link noselect">Подробнее</a>
+            <AuthorizeView Roles="CommonUser">
+                <Authorized>
+                    @if (WeightsAndQuantity.ContainsKey(Item.Weight))
+                    {
+                        <Quantity @bind-Value="@WeightsAndQuantity[Item.Weight]" OnDecrement="OnDecrementQuantityAsync" OnIncrement="OnIncrementQuantityAsync" />
+                    }
+                    else
+                    {
+                        <button 
+                            class="card__button noselect" 
+                            type="button" 
+                            aria-label="Добавить в корзину" @onclick="AddToCart"
+                                disabled="@(Item.WeightsAndStocks[Item.Weight] == 0)" 
+                                title="@((Item.WeightsAndStocks[Item.Weight] == 0) ? "Нет в наличии" : "Добавить в корзину")">
+                            <img src="images/icons/cart.svg" alt="Корзина" class="noselect"/>
+                        </button>
+                    }
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Roles="@UserRole.Anonymous">
+                <Authorized>
+                    <a href="/login" class="card__button noselect">
+                            <img src="images/icons/cart.svg" alt="Корзина" />
+                        </a>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+
+        @if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+        {
+            <span class="card__discount noselect">-@Item.WeightsAndDiscounts[Item.Weight]%</span>
+        }
+
+    </figure>
+}
+
+@code {
+    private int quantity = 0;
+    private Dictionary<int, int> WeightsAndQuantity = new();
+
+    [Parameter]
+    public ThemeType Theme { get; set; }
+
+    [Parameter]
+    public CardModel? Item { get; set; }
+
+    private async Task AddToCart()
+    {
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+
+        if (!WeightsAndQuantity.ContainsKey(Item.Weight))
+        {
+            CartItem cartItem = new CartItem
+                {
+                    ProductId = Item.ProductId,
+                    CartId = token.Cart.Id,
+                    Quantity = 1,
+                    Weight = Item.Weight
+                };
+
+            WeightsAndQuantity[Item.Weight] = 1;
+
+            if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+            {
+                cartItem.Price = (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100);
+            }
+            else
+            {
+                cartItem.Price = Item.WeightsAndPrices[Item.Weight];
+            }
+
+            CartItem newItem = await CartService.AddItemAsync(cartItem);
+
+            if (newItem is not null)
+            {
+                token.Cart.Items.Add(newItem);
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+                await localStorageService.SetAsync(nameof(Token), token);
+                await CartService.UpdateCounter();
+                StateHasChanged();
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        WeightsAndQuantity = new();
+
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+
+        if (token.Role.Equals(UserRole.User))
+        {
+            if ((token.Cart?.Items is not null) && (token.Cart?.Items.FirstOrDefault(ci => ci.ProductId == Item?.ProductId) is not null))
+            {
+                foreach (CartItem ci in token.Cart.Items.Where(ci => ci.ProductId == Item.ProductId))
+                {
+                    WeightsAndQuantity[ci.Weight] = ci.Quantity;
+                }
+            }
+        }
+    }
+
+    private async Task OnIncrementQuantityAsync()
+    {
+        if (WeightsAndQuantity[Item.Weight] < 100)
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            int id = item.Id;
+
+            int response = await CartService.IncrementQuantityAsync(id);
+
+            if (response == 1)
+            {
+                item.Quantity += 1;
+
+                if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+                {
+                    item.Price = (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100) * item.Quantity;
+                }
+                else
+                {
+                    item.Price = Item.WeightsAndPrices[Item.Weight] * item.Quantity;
+                }
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task OnDecrementQuantityAsync()
+    {
+        if (WeightsAndQuantity[Item.Weight] == 0)
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            int id = item.Id;
+
+            int response = await CartService.DeleteItemAsync(id);
+
+            if (response == 1)
+            {
+                WeightsAndQuantity.Remove(Item.Weight);
+                token.Cart.Items.Remove(item);
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                await CartService.UpdateCounter();
+                StateHasChanged();
+            }
+        } 
+        else
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            int id = item.Id;
+
+            int response = await CartService.DecrementQuantityAsync(id);
+
+            if(response == 1)
+            {
+                item.Quantity -= 1;
+
+                if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+                {
+                    item.Price = (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100) * item.Quantity;
+                }
+                else
+                {
+                    item.Price = Item.WeightsAndPrices[Item.Weight] * item.Quantity;
+                }
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                StateHasChanged();
+            }
+        }
+    }
+}

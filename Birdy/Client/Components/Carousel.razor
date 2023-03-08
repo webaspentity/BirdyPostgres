@@ -1,0 +1,112 @@
+﻿@inject NavigationManager nav
+@using System.Web
+
+<div class="carousel">
+    <h2 class="carousel__title noselect">@Title</h2>
+
+        <button class="carousel__arrow carousel__arrow_left"
+            type="button" disabled = "@(counter <= 0)"
+            aria-label="Предыдущий слайд" @onclick="LeftArrowClick">
+        @(counter > 0 ? HttpUtility.HtmlDecode("&#8249;") : null)
+        </button>
+    
+    <div class="carousel__container">
+
+        <div class="carousel__items"
+             style="transform:translate3d(@(translate)%,0,0);"
+             @ontouchstart="OnTouchStartHandler"
+             @ontouchend="OnTouchEndHandler">
+
+            @for (int i = 0; i < slides; i++)
+            {
+                <div class="carousel__item">
+                    @if(Items is not null)
+                    {
+                        foreach (SlideModel slide in Items.Skip(i * 4).Take(4))
+                        {
+                            <figure class="slide" @onclick="()=> OnSlideClick(slide.Link.Url)">
+                                <a href="@slide.Link?.Url"><img src="@slide.Image?.Source" alt="@slide.Image?.Alt" class="slide__image" /></a>
+                                <figcaption class="slide__caption">@slide.Title</figcaption>
+                            </figure>
+                        }
+                    }
+                    
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+        <button class="carousel__arrow carousel__arrow_right"
+            type="button" disabled="@(counter >= (Items?.Count() - 1))"
+            aria-label="Следующий слайд" @onclick="RightArrowClick">
+        @((counter < (Items?.Count() - 1)) ? HttpUtility.HtmlDecode("&#8250;") : null)
+        </button>
+    
+</div>
+
+@code {
+    private int translate = 0;
+    private int slides = 0;
+    private int counter = 0;
+    private double touchStart;
+    private double touchEnd;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public IEnumerable<SlideModel>? Items { get; set; }
+
+    private void LeftArrowClick()
+    {
+        if (counter > 0)
+        {
+            translate += 25;
+            counter--;
+        }
+    }
+
+    private void RightArrowClick()
+    {
+        if (counter < Items?.Count() - 1)
+        {
+            translate -= 25;
+            counter++;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (Items is not null)
+        {
+            slides = (Items.Count() % 4 == 0) ? Items.Count() / 4 : (int)(Items.Count() / 4) + 1;
+        }
+    }
+
+    private void OnTouchStartHandler(TouchEventArgs t)
+    {
+        touchStart = t.Touches[0].ClientX;
+    }
+
+    private void OnTouchEndHandler(TouchEventArgs t)
+    {
+        touchEnd = t.ChangedTouches[0].ClientX;
+
+        if ((touchStart - touchEnd) > 0 && Math.Abs(touchStart - touchEnd) > 150)
+        {
+            RightArrowClick();
+        }
+        else if ((touchStart - touchEnd) < 0 && Math.Abs(touchStart - touchEnd) > 150)
+        {
+            LeftArrowClick();
+        }
+    }
+
+    private void OnSlideClick(string path)
+    {
+        if (!String.IsNullOrEmpty(path)) nav.NavigateTo(path);
+    }
+}

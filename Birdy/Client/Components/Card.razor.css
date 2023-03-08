@@ -1,0 +1,224 @@
+﻿.card {
+    border-radius: 15px;
+    box-shadow: -8px -8px 15px #FFFFFF, 4px 4px 20px rgba(0, 0, 0, 0.05);
+    display: grid;
+    grid-template-areas:
+        'image'
+        'title'
+        'price'
+        'weights'
+        'controls';
+    grid-row-gap: 2.5em;
+    margin: 0;
+    padding: 2em 2em 3em 2em;
+    transition: .3s ease;
+    position: relative;
+}
+
+        .card:hover .card__image{
+            border-radius: 27%;
+        }
+
+    .card:hover .card__image, .card__image:focus {
+        outline: 4px solid palevioletred;
+    }
+
+        .card_white {
+            background-color: #fff;
+        }
+
+.card_grey {
+    background-color: #f9f9f9;
+    border: 1px solid #F2F2F2;
+}
+
+.card__image {
+    display: block;
+    grid-area: image;
+    position: relative;
+    border-radius: 10px;
+    padding-bottom: 54.5219638%;
+    transition: .2s linear;
+    background-color: white;
+    border-radius: 15%;
+    overflow: hidden;
+    outline-color: whitesmoke;
+}
+
+.card_grey .card__image {
+    padding-bottom: 82.5454545%;
+}
+
+.card__image img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    top:0;
+    left: 0;
+    object-fit: contain;
+}
+
+.card__title {
+    font-size: 2.4em;
+    color: #000;
+    font-weight: 600;
+    grid-area: title;
+    transition: .4s ease;
+}
+
+    .card__title span {
+        font-size: 0.5833333em;
+        color: #828282;
+        display: block;
+        grid-area: remark;
+        padding: 0.5em 0;
+    }
+
+.cart__price {
+    grid-area: price;
+    margin: 0;
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #333333;
+}
+
+.cart__weights {
+    grid-area: weights;
+}
+
+.card__controls {
+    grid-area: controls;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 0.5em;
+    row-gap: 1em;
+}
+
+.card__link {
+    background-color: #3ecf5e;
+    text-decoration: none;
+    color: #fff;
+    padding: 0.5555555em 1.6666666em;
+    border-radius: 5px;
+    font-size: 1.8em;
+    border: 0.1em solid rgba(110, 230, 144, 0.53);
+    display: flex;
+    align-items: center;
+}
+
+    .card__link:focus {
+        outline: 5px solid lightgreen;
+    }
+
+    .card__button {
+        border: 1px solid #bdbdbd;
+        flex: 0 0 4em;
+        height: 4em;
+        padding: 0.4em;
+        border-radius: 10px;
+        background: #fff;
+        align-self: end;
+    }
+
+    .card__button img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .card__button:hover {
+        cursor: pointer;
+    }
+
+        .card__button:focus {
+            outline: 4px solid lightgrey;
+        }
+
+.card__discount {
+    display: inline-block;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    background-color: mediumpurple;
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+    box-shadow: 0px 1px 4px rgb(147,112,219);
+    padding: 0.71429em 1.14285em;
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 15.5%;
+}
+
+.card__radio {
+    display: flex;
+    row-gap: 0.5em;
+}
+
+.card__weight-label {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.8em;
+    font-weight: 500;
+    padding: 0.1em 0.5em;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+    .card__weight-label:focus {
+        outline: 1px solid cornflowerblue;
+    }
+
+    .card__weight-label.checked {
+        outline: 1px solid #3ECF5E;
+    }
+
+    .card__weight-label ::deep input {
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+.line-through{
+    position: relative;
+}
+
+    .line-through::before {
+        position: absolute;
+        top: calc(50% - 0.08em);
+        height: 0.16em;
+        width: 100%;
+        content: "";
+        display: block;
+        border-radius: 15px;
+        background-color: deeppink;
+        opacity: 0.75;
+    }
+
+    .line-discount {
+        color: mediumpurple;
+    }
+
+.small{
+    font-size: 0.75em;
+}
+
+@media (max-width: 23.125em){
+    .card__controls{
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .card__link{
+        min-height: 2em;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 20em){
+    .card__radio{
+        flex-wrap: wrap;
+    }
+}

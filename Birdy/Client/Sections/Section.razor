@@ -1,0 +1,185 @@
+﻿<Container>
+    <div class="filters noselect">
+        <div class="filters__toggle">
+            <button role="button" aria-label="фильтры" class="filters__toggler" @onclick="()=> showFilters = !showFilters">
+                @*<img src="@(showFilters ? "/images/icons/filters_active.svg"  : "/images/icons/filters.svg")" />*@
+                <img src="/images/icons/filters_active.svg" alt="Фильтры и Сортировка"/>
+            </button>
+        </div>
+        <div class="@((showFilters) ? "filters__items active" : "filters__items")">
+            <div class="filters__container">
+                <button class=@((minmaxprice) ? "filter minmax" : "filter") aria-label="сортировка по цене" @onclick="SortByPrice">
+                    <span>по цене</span>
+                    <img src="/images/icons/filter_list.svg" alt="Сортировка" />
+                </button>
+                <button class=@((minmaxname) ? "filter minmax" : "filter") aria-label="сортировка по названию" @onclick="SortByName">
+                    <span>по названию</span>
+                    <img src="/images/icons/filter_list.svg" alt="Сортировка" />
+                </button>
+                <div class="filter__discount" tabindex="0">
+                    <input class="filter__discount_input" value="@discount" type="checkbox" aria-hidden="true" id="filter_discount" />
+                    <label class="@(discount ? "filter__discount_label active" : "filter__discount_label")" for="filter_discount" @onclick="FilterByDiscount">Со скидкой</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</Container>
+
+<section class="section">
+    <Container>
+        @if (!String.IsNullOrEmpty(Title))
+        {
+            <SectionTitle Href="@Href" ShowMore=ShowMore>@Title</SectionTitle>
+        }
+
+        @if (ManyPages)
+        {
+            <div class="section__cards section-4">
+                @if (currentItems is not null)
+                {
+                    @foreach (CardModel card in currentItems)
+                    {
+                        <Card Item="@card" />
+                    }
+                }
+            </div>
+
+            <div class="pagination noselect">
+                <button class=@((Skip == 0) ? "hidden pagination__arrow pagination__arrow_left" : "pagination__arrow pagination__arrow_left")
+                        type="button"
+                        aria-label="Предыдущая страница"
+                    @onclick="LeftArrowClick">
+                </button>
+                @for (int i = 0; i < pages; i++)
+                {
+                    <Bullet @bind-Current=Skip Order="@i"></Bullet>
+                }
+
+                <button class=@((Skip == pages - 1) ? "hidden pagination__arrow pagination__arrow_right" : "pagination__arrow pagination__arrow_right")
+                        type="button"
+                        aria-label="Следующая страница"
+                    @onclick="RightArrowClick">
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class=@((Is4Section) ? "section__cards section-4" : "section__cards")>
+                @if (items is not null)
+                {
+                    @foreach (CardModel card in items)
+                    {
+                        <Card Item="@card" />
+                    }
+                }
+            </div>
+        }
+    </Container>
+</section>
+
+@code {
+        Burger? burger;
+    private bool showFilters = false;
+    private bool minmaxprice = false;
+    private bool minmaxname = false;
+    private bool discount = false;
+    private List<CardModel>? items;
+    private List<CardModel>? currentItems;
+
+    [Parameter]
+    public List<CardModel>? Items { get; set; }
+
+    private int pages;
+    private int skip = 0;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public bool Is4Section { get; set; }
+
+    [Parameter]
+    public string? Href { get; set; }
+
+    [Parameter]
+    public bool ShowMore { get; set; }
+
+    [Parameter]
+    public bool ManyPages { get; set; }
+
+    [Parameter]
+    public int Skip
+    {
+        get => skip;
+        set
+        {
+            skip = value;
+            GetItems(Skip);
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (ManyPages)
+        {
+            pages = (Items.Count() % 8 == 0) ? Items.Count() / 8 : (int)(Items.Count() / 8) + 1;
+            items = Items;
+            GetItems(Skip);
+        }
+    }
+
+    private void GetItems(int skip)
+    {
+        currentItems = items?.Skip(Skip * 8).Take(8).ToList();
+    }
+
+    private void LeftArrowClick()
+    {
+        if (Skip > 0)
+        {
+            Skip--;
+        }
+    }
+
+    private void RightArrowClick()
+    {
+        if (Skip < pages - 1)
+        {
+            Skip++;
+        }
+    }
+
+    private void SortByPrice()
+    {
+        minmaxprice = !minmaxprice;
+        if (minmaxname) minmaxname = false;
+        if (minmaxprice) items = Items.OrderBy(cm => cm.WeightsAndPrices[cm.Weight]).ToList();
+        else items = Items.OrderByDescending(cm => cm.WeightsAndPrices[cm.Weight]).ToList();
+        if (discount) items = items.Where(cm => cm.WeightsAndDiscounts is not null && cm.WeightsAndDiscounts.Count > 0).ToList();
+        currentItems = items?.Skip(Skip * 8).Take(8).ToList();
+        pages = (items.Count() % 8 == 0) ? items.Count() / 8 : (int)(items.Count() / 8) + 1;
+    }
+
+    private void SortByName()
+    {
+        minmaxname = !minmaxname;
+        if (minmaxprice) minmaxprice = false;
+        if (minmaxname) items = Items.OrderBy(cm => cm.Title).ToList();
+        else items = Items.OrderByDescending(cm => cm.Title).ToList();
+        if (discount) items = items.Where(cm => cm.WeightsAndDiscounts is not null && cm.WeightsAndDiscounts.Count > 0).ToList();
+        currentItems = items?.Skip(Skip * 8).Take(8).ToList();
+        pages = (items.Count() % 8 == 0) ? items.Count() / 8 : (int)(items.Count() / 8) + 1;
+    }
+
+    private void FilterByDiscount()
+    {
+        discount = !discount;
+        if (discount) items = Items.Where(cm => cm.WeightsAndDiscounts is not null && cm.WeightsAndDiscounts.Count > 0).ToList();
+        else items = Items;
+        if (minmaxprice) items = items.OrderBy(cm => cm.WeightsAndPrices[cm.Weight]).ToList();
+        if (minmaxname) items = items.OrderBy(cm => cm.Title).ToList();
+        currentItems = items?.Skip(Skip * 8).Take(8).ToList();
+        pages = (items.Count() % 8 == 0) ? items.Count() / 8 : (int)(items.Count() / 8) + 1;
+    }
+}

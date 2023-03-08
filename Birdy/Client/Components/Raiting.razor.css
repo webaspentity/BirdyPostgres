@@ -1,0 +1,88 @@
+﻿.raiting {
+    width: max-content;
+    -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    padding: 0.5em;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+.star-source {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.star-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    column-gap: 0.5em;
+}
+
+.star {
+    color: transparent;
+    transition: color 0.2s ease-in-out;
+}
+
+::deep input[name="raiting"] {
+    display: inline-block;
+    width: 0;
+    opacity: 0;
+    margin-left: -2px;
+}
+
+label {
+    cursor: pointer;
+}
+
+svg {
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0.15em;
+}
+
+    label:hover ~ label .star,
+    svg.star:hover,
+    ::deep input[name="raiting"]:focus ~ label .star,
+    ::deep input[name="raiting"]:checked ~ label .star {
+        color: gold;
+    }
+
+::deep input[name="raiting"]:checked + label .star {
+    animation: starred 0.2s;
+}
+
+.raiting__zero {
+    font-size: 1.6em;
+    color: coral;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0.5em;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+    .raiting__btn:hover{
+        cursor: pointer;
+    }
+
+.raiting__value{
+    display: inline-flex;
+    width: 4em;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes starred {
+    from {
+        color: yellow;
+    }
+
+    to {
+        color: gold;
+    }
+}
+

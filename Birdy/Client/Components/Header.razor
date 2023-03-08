@@ -1,0 +1,63 @@
+﻿@inject IJSRuntime js
+
+<header class=@cssClass id="header">
+    <Container>
+        <Logo />
+
+            <Menu MenuLinkClick="OnMenuLinkClick" />
+
+        <Burger OnClick="ToggleHeaderState" @ref=burger />
+        <Account OnAccountElementClick="OnMenuLinkClick" />
+        <Search OnInputClick="()=> modal.Open()" />
+    </Container>
+</header>
+
+<Modal @ref="modal">
+    <Search />
+</Modal>
+
+@code {
+    #region Fields
+
+    private string cssClass = "header";
+    private DotNetObjectReference<Header>? objRef;
+    Burger? burger;
+    private bool searching = false;
+    Modal? modal;
+
+    #endregion
+
+    #region Methods
+
+    private void OnMenuLinkClick()
+    {
+        if (burger is not null && burger.Active)
+        {
+            ToggleHeaderState();
+        }
+    }
+
+    [JSInvokable]
+    public void ToggleHeaderState()
+    {
+        cssClass = (cssClass.Contains("active")) ? "header" : "header active";
+        burger?.ToggleBurger();
+    }
+
+    [JSInvokable]
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await js.InvokeVoidAsync("setHeader", objRef);
+        }
+    }
+    #endregion
+}
+

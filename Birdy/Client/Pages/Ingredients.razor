@@ -1,0 +1,54 @@
+﻿@page "/ingredients"
+@using System.Text.Json
+@inject HttpClient http
+
+<PageTitle>Ингредиенты</PageTitle>
+
+<div class="object-container">
+    @if (ingredients is not null)
+    {
+        foreach (Ingredient ing in ingredients)
+        {
+            string title = $"Товары, в которых содержится ингредиент \"{ing.Name}\"";
+            <DetailSection 
+                Ingredient="ing"
+                Type="typeof(Ingredient)"
+                Image="@(new ImageModel { Source = $"{ing.ImageSource}", Alt = $"{ing?.Name}"})" 
+                Slides="GetSlidesForIngredient(ing)" 
+                CarouselTitle=@title />
+        }
+    }
+</div>
+
+@code {
+    private IEnumerable<Ingredient>? ingredients;
+    private IEnumerable<Product>? products;
+    private IEnumerable<ProductIngredient>? pi;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        ingredients = await http.GetFromJsonAsync<IEnumerable<Ingredient>>("api/ingredients", options);
+        products = await http.GetFromJsonAsync<IEnumerable<Product>>("api/products", options);
+        pi = await http.GetFromJsonAsync<IEnumerable<ProductIngredient>>("api/productingredient", options);
+    }
+
+    private IEnumerable<SlideModel>? GetSlidesForIngredient(Ingredient ingredient)
+    {
+        var slides = new List<SlideModel>();
+        var composition = pi.Where(pi => pi.IngredientId == ingredient.Id);
+
+        foreach(ProductIngredient pi in composition)
+        {
+            var prod = products.Where(p => p.Id == pi.ProductId).First();
+
+            slides.Add(new SlideModel
+                {
+                    Title = prod.Name,
+                    Image = new ImageModel{ Source = prod.ImageSource, Alt = prod.Name}, 
+                    Link = new LinkModel { Url = $"/products/{prod?.Category?.Url}/{prod?.Id}"}
+                });
+        }
+        return slides;
+    }
+}

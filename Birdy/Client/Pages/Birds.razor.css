@@ -1,0 +1,46 @@
+﻿::deep .details__content {
+    text-align: justify;
+    padding: 1em;
+}
+
+::deep .details__description {
+    line-height: 1.5;
+}
+
+::deep .carousel {
+    grid-area: info;
+    min-height: unset;
+}
+
+.object-container ::deep .details {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+        'image text'
+        'carousel carousel';
+}
+
+.object-container ::deep .details__image{
+    grid-area: image;
+}
+
+    .object-container ::deep .details__image img{
+        object-fit: cover;
+    }
+
+    .object-container ::deep .details__content {
+        grid-area: text;
+    }
+
+.object-container ::deep .carousel{
+    grid-area: carousel;
+}
+
+@media (max-width: 48em){
+    .object-container ::deep .details {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'image' 
+            'text'
+            'carousel';
+    }
+}

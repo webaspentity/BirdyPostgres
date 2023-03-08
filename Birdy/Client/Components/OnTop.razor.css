@@ -1,0 +1,41 @@
+﻿.on-top {
+    width: 0;
+    height: 0;
+    position: fixed;
+    right: 3em;
+    bottom: 3em;
+    border: none;
+    padding: 0;
+    transition: .4s ease;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+}
+
+    .on-top.visible {
+        width: 4em;
+        height: 4em;
+        z-index: 5;
+    }
+
+        .on-top.visible:hover {
+            cursor: pointer;
+        }
+
+    .on-top:focus {
+        outline: none;
+    }
+
+    .on-top img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+@media only screen and (max-width: 48em) {
+    .on-top {
+        display: none;
+    }
+}

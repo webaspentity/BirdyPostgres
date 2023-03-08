@@ -1,0 +1,204 @@
+﻿﻿.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: loading .4s ease;
+}
+
+.form {
+}
+
+.form__fieldset {
+    padding: 4em 0 0 0;
+    display: grid;
+    grid-template-areas:
+        'email email'
+        'password password'
+        'toogler button';
+    grid-template-columns: 1fr 1fr;
+    grid-row-gap: 2.2em;
+    grid-column-gap: 7em;
+    border: none;
+    position: relative;
+    box-sizing: border-box;
+    animation: show .6s ease-in-out;
+    max-width: 60em;
+    margin: 0 auto;
+}
+
+.form__toogler {
+    grid-area: toogler;
+}
+
+.form__button {
+    grid-area: button;
+}
+
+.form__element_email {
+    grid-area: email;
+}
+
+.form__element_password {
+    grid-area: password;
+    position: relative;
+}
+
+.eye {
+    width: 3em;
+    height: 3em;
+    background-color: transparent;
+    border-radius: 50%;
+    position: absolute;
+    top: 0.4em;
+    right: 0.4em;
+    padding: 0;
+    border: none;
+}
+
+    .eye:hover {
+        cursor: pointer;
+    }
+
+    .eye:focus {
+        outline: none;
+    }
+
+.form__legend {
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.form__element {
+    position: relative;
+}
+
+    .form__element ::deep .form__input {
+        padding: 0.8333333em 1.1111111em;
+        background-color: #f2f2f2;
+        font-size: 1.6em;
+        border-radius: 5px;
+        border: 1px solid #bdbdbd;
+        transition: .4s ease;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+.form__label {
+    padding: 0.2em 0.5em;
+    border-radius: 10px;
+    font-size: 1.6em;
+    color: #828282;
+    position: absolute;
+    left: 1.1111111em;
+    top: 0.7333333em;
+    transition: .4s ease;
+    user-select: none;
+}
+
+.form__element ::deep .form__input:focus {
+    background-color: #fff;
+}
+
+    .form__element ::deep .form__input:focus + .form__label,
+    .form__label.active {
+        left: 0;
+        top: -1.7em;
+        background-color: #333;
+        color: #fff;
+    }
+
+.form__element ::deep .form__input:focus {
+    outline: none;
+    box-shadow: 4px 6px #333333d5;
+    transform: translate3d(-0.1em,0,0);
+}
+
+.form__error {
+    font-size: 1.2em;
+    color: lightcoral;
+    padding: 0.4em 0 0.7em 0;
+}
+
+.form__toogler,
+.form__button {
+    padding: 0.9375em;
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+    transition: .4s ease;
+    font-size: 1.6em;
+    font-family: 'Gilroy', sans-serif;
+    font-weight: 600;
+}
+
+.form__toogler {
+    border: none;
+    background-color: transparent;
+}
+
+.form__button {
+    background-color: mediumseagreen;
+    color: #fff;
+}
+
+.form__toogler:focus {
+    outline: none;
+}
+
+.form__toogler:hover, .form__toogler:focus {
+    color: cornflowerblue;
+    text-decoration: underline;
+}
+
+.form__button:hover {
+    background-color: seagreen;
+}
+
+.form__toogler:hover,
+.form__button:hover {
+    cursor: pointer;
+}
+
+.form__element_password input {
+    background-color: green;
+}
+
+.form__element.form__element_password input {
+    padding-right: 3em;
+}
+
+    .form__element.form__element_password input::-ms-reveal,
+    .form__element.form__element_password input::-ms-clear {
+        display: none;
+    }
+
+@media only screen and (max-width: 31.25em) {
+    .form__fieldset {
+        grid-template-areas:
+            'email email'
+            'password password'
+            'toogler toogler'
+            'button button';
+        width: calc(100vw - 30px);
+    }
+}
+
+@keyframes show {
+    from {
+        transform: scale();
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes loading {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

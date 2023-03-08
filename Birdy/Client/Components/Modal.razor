@@ -1,0 +1,30 @@
+﻿@inject IJSRuntime js
+
+<dialog class="dialog" @ref=dialog @onmousedown="Close">
+    <div class="dialog__body" @onmousedown:stopPropagation>
+        @ChildContent
+        <button class="button__close" type="button" @onclick="Close">
+            &#10006;
+        </button>
+    </div>
+</dialog>
+
+@code {
+    private ElementReference dialog;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    public async Task Open()
+    {
+        await js.InvokeVoidAsync("openDialog", dialog);
+    }
+
+    public async Task Close()
+    {
+        if (OnClose.HasDelegate) await OnClose.InvokeAsync();
+        await js.InvokeVoidAsync("closeDialog", dialog);
+    }
+}

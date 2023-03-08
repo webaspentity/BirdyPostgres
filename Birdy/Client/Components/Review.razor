@@ -1,0 +1,16 @@
+﻿<figure class="review noselect">
+    <div class="review__content">
+        <p class="review__text">@Item?.Comment</p>
+    </div>
+    <div class="review__author">
+        <div class="review__avatar">
+            <img alt="Аватар" src="@Item?.ImageSource" />
+        </div>
+        <figcaption class="review__author-name">@(Item?.UserName ?? "Аноним")</figcaption>
+    </div>
+</figure>
+
+@code {
+    [Parameter]
+    public ReviewModel? Item { get; set; }
+}

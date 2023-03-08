@@ -1,0 +1,17 @@
+﻿.order-success {
+    overflow: hidden;
+}
+
+.order-success__title {
+    padding: 2em;
+    font-size: 2em;
+}
+
+.order-success__thanks {
+    background-color: mediumseagreen;
+    color: white;
+    padding: 2em;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 2em;
+}

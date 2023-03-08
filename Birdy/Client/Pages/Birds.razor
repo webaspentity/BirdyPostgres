@@ -1,0 +1,66 @@
+﻿@page "/birds"
+@using System.Text.Json
+@inject HttpClient http
+
+<PageTitle>Птицы</PageTitle>
+
+<div class="object-container">
+    @if (birds is not null)
+    {
+        foreach (Bird bird in birds)
+        {
+            <DetailSection 
+                Bird="bird" 
+                Type="typeof(Bird)" 
+                Image="@(new ImageModel { Source = $"{bird.ImageSource}", Alt = $"{bird?.Name}"})" 
+                Slides="GetSlidesForBird(bird)" 
+                CarouselTitle="Товары, которые подойдут данному виду птиц" />
+        }
+    }
+</div>
+
+@code {
+    private IEnumerable<Bird>? birds;
+    private IEnumerable<Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        birds = await http.GetFromJsonAsync<IEnumerable<Bird>>("api/birds", options);
+        products = await http.GetFromJsonAsync<IEnumerable<Product>>("api/products", options);
+    }
+
+
+    private IEnumerable<SlideModel>? GetSlidesForBird(Bird bird)
+    {
+        var slides = new List<SlideModel>();
+
+            foreach (Product p in products)
+            {
+                if (bird.Size.Equals(p.BirdSize))
+                {
+                    if (!p.Category.Name.Equals(ProductCategory.Food))
+                    {
+                        slides.Add(
+                        new SlideModel
+                            {
+                                Image = new ImageModel { Source = p.ImageSource, Alt = p.Name },
+                                Title = p.Name,
+                                Link = new LinkModel { Url = $"/products/{p.Category.Url}/{p.Id}" }
+                            });
+                    }
+                    else if (p.NutritionType.Equals(bird.NutritionType))
+                    {
+                        slides.Add(
+                        new SlideModel
+                            {
+                                Image = new ImageModel { Source = p.ImageSource, Alt = p.Name },
+                                Title = p.Name,
+                                Link = new LinkModel { Url = "/" }
+                            });
+                    }
+                }
+            }
+            return slides;
+    }
+}

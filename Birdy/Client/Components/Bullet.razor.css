@@ -1,0 +1,25 @@
+﻿.bullet {
+    font-size: 1.8em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: #828282;
+    padding: 0.5em 1em;
+    border-radius: 25%;
+}
+
+    .bullet:hover:not(.active) {
+        cursor: pointer;
+    }
+
+    .bullet.active {
+        background-color: rosybrown;
+        color: white;
+    }
+
+    .bullet:focus {
+        outline: 0;
+        background-color: rosybrown;
+        color: white;
+    }

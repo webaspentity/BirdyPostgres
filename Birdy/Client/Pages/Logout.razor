@@ -1,0 +1,11 @@
+﻿@page "/logout"
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@code {
+    protected override void OnInitialized()
+    {
+        ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MakeUserAnonymous();
+        NavigationManager.NavigateTo("/", true);
+    }
+}

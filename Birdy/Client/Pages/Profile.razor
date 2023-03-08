@@ -1,0 +1,270 @@
+﻿@page "/profile"
+@inject IJSRuntime js
+@inject ILocalStorageService localStorageService
+@using BlazorInputMask
+@inject HttpClient http
+@inject NavigationManager NavigationManager
+@using System.Text.Json
+@inject CartService CartService
+
+
+<PageTitle>Профиль</PageTitle>
+
+<AuthorizeView Roles="Administrator, CommonUser">
+    <Authorized>
+        <section class="profile-section">
+            <Container>
+                <article class="profile">
+                    <div class="profile__content">
+                        <button class="profile__edit" type="button" aria-label="Редактировать" @onclick="Edit"></button>
+                        <div class="profile__image noselect">
+                            <img src="images/avatar.png" alt="Аватар" />
+                        </div>
+                        <address class="profile__data">
+                            <p class="profile__name noselect">
+                                @{
+                                    if (String.IsNullOrEmpty(token.UserName))
+                                    {
+                                        <span class="empty"></span>
+                                    }
+                                    else
+                                    {
+                                        @token.UserName
+                                    }
+                                }
+                            </p>
+                            <p class="profile__telephone noselect">
+                                @{
+                                    if (String.IsNullOrEmpty(token.Telephone))
+                                    {
+                                        <span class="empty"></span>
+                                    }
+                                    else
+                                    {
+                                        @token.Telephone
+                                    }
+                                }
+                            </p>
+                            <p class="profile__email noselect">
+                                @{
+                                    if (String.IsNullOrEmpty(token.Email))
+                                    {
+                                        <span class="empty"></span>
+                                    }
+                                    else
+                                    {
+                                        @token.Email
+                                    }
+                                }
+                            </p>
+                        </address>
+                        <div class="profile__address noselect">
+                            <span>Адрес:</span>
+                            <address>
+                                <p>
+                                    @(token.Address ?? "Адрес не указан")
+                                </p>
+                            </address>
+                        </div>
+                        <a href="/logout" class="logout noselect">Выйти</a>
+                    </div>
+                </article>
+            </Container>
+        </section>
+    </Authorized>
+    <NotAuthorized>
+        <Redirect To="/login" />
+    </NotAuthorized>
+</AuthorizeView>
+
+<Modal @ref="modal">
+    <EditForm Model="model" class="form" method="post" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="OnInvalidSubmit">
+        <DataAnnotationsValidator />
+        <fieldset class="form__fieldset noselect">
+            <legend class="form__legend">Редактирование аккаунта</legend>
+
+            <div class="form__element form__element_name">
+                <input type="text" @bind-value="@model.Name" class="form__input" @ref="inputName" />
+                <label class=@((String.IsNullOrEmpty(model.Name)) ? "form__label": "form__label active") @onclick="OnNameLabelClick">Имя</label>
+                <div class="form__error">
+                    <ValidationMessage For="@(() => model.Name)" />
+                </div>
+            </div>
+
+            <div class="form__element form__element_telephone">
+                <InputMask @bind-Value="@model.Telephone" data-mask="+7 (000) 000-00-00" class="form__input form__inputmask" id="edit_telephone" />
+                <label class=@((String.IsNullOrEmpty(model.Telephone)) ? "form__label": "form__label active") @onclick="OnTelephoneLabelClick">Телефон</label>
+                <div class="form__error">
+                    <ValidationMessage For="@(() => model.Telephone)" />
+                </div>
+            </div>
+
+            <div class="form__element form__element_email">
+                <input @bind-value="@model.Email" class="form__input" @bind-value:event="oninput" @ref="emailInput" />
+                <label class=@((String.IsNullOrEmpty(model.Email)) ? "form__label": "form__label active") @onclick="OnEmailLabelClick">Электронная почта</label>
+                <div class="form__error">
+                    <ValidationMessage For="@(() => model.Email)" />
+                </div>
+            </div>
+
+            <div class="form__element form__element_password">
+                <input type="@(showPassword ? "text" : "password")" @bind-value="@model.Password" class="form__input" @ref="inputPassword" minlength="8" maxlength="25"/>
+                <label class=@((String.IsNullOrEmpty(model.Password)) ? "form__label" : "form__label active") @onclick="OnPasswordLabelClick">Новый пароль</label>
+                <button type="button" class="eye" @onclick="OnEyeClick" @onfocus="FocusOnPasswordInput">
+                    <img alt="Показать пароль" src="@(showPassword ? "/images/icons/openedeye.png" : "/images/icons/closedeye.png")" />
+                </button>
+                <div class="form__error">
+                    <ValidationMessage For="@(() => model.Name)" />
+                </div>
+            </div>
+
+            <div class="form__element form__element_address">
+                <input type="text" @bind-value="@model.Address" class="form__input" @ref="inputAddress" />
+                <label class=@((String.IsNullOrEmpty(model.Address)) ? "form__label" : "form__label active") @onclick="OnAddressLabelClick">Адрес</label>
+                <div class="form__error">
+                    <ValidationMessage For="@(() => model.Address)" />
+                </div>
+            </div>
+
+            <button type="submit" aria-label="Сохранить" class="form__button">Сохранить</button>
+        </fieldset>
+    </EditForm>
+</Modal>
+
+<Modal @ref="badRequestModal">
+    @if (!String.IsNullOrEmpty(badRequestMessage))
+    {
+        <p class="message">@badRequestMessage</p>
+    }
+    else
+    {
+        <p class="message">Внесение изменений закончилось неудачей.</p>
+    }
+</Modal>
+
+@code {
+    private Token token = new();
+    private ProfileModel model = new();
+    private Modal? modal;
+    private Modal? badRequestModal;
+    private List<Order>? orders = null;
+    private ElementReference inputName;
+    private ElementReference inputPassword;
+    private ElementReference inputAddress;
+    private ElementReference emailInput;
+    private bool showPassword = false;
+    private string? badRequestMessage;
+    JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    List<Product> products = new();
+
+    private void Edit()
+    {
+        modal?.Open();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        modal?.Close();
+        await UpdateProfile();
+        StateHasChanged();
+    }
+
+    private void OnInvalidSubmit() { }
+
+    protected override async Task OnInitializedAsync()
+    {
+        token = await localStorageService.GetAsync<Token>(nameof(Token));
+
+        model.Name = token.UserName ?? null;
+        model.Email = token.Email;
+        model.Password = null;
+        model.Telephone = token.Telephone ?? null;
+        model.Address = token.Address ?? null;        
+    }
+
+    private async Task UpdateProfile()
+    {
+        bool noChanges =
+        ((String.IsNullOrEmpty(model.Name) && String.IsNullOrEmpty(token.UserName)) || model.Name!.Equals(token.UserName)) &&
+        (model.Email is not null && model.Email.Equals(token.Email)) &&
+        (String.IsNullOrEmpty(model.Password)) &&
+        ((String.IsNullOrEmpty(model.Telephone) && String.IsNullOrEmpty(token.Telephone)) || model.Telephone!.Equals(token.Telephone)) &&
+        ((String.IsNullOrEmpty(model.Address) && String.IsNullOrEmpty(token.Address)) || model.Address!.Equals(token.Address));
+
+        if (noChanges) { return; }
+
+        if (String.IsNullOrEmpty(model.Email)) model.Email = token.Email;
+
+        User updatedUser = new User
+            {
+                Id = token.Id, Role = token.Role,
+                LoginData = new LoginData { Email = model.Email, Password = model.Password, UserId = token.Id, Id = token.LoginId },
+                Profile = new Birdy.Shared.Profile { UserName = model.Name, UserTelephone = model.Telephone, UserAddress = model.Address, UserId = token.Id, Id = token.ProfileId },
+                Cart = token.Cart
+    };
+
+        var response = await http.PatchAsJsonAsync("api/profile", updatedUser);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var token = new Token
+                {
+                    Id = updatedUser.Id,
+                    Role = updatedUser.Role,
+                    Address = updatedUser.Profile.UserAddress,
+                    Email = updatedUser.LoginData.Email,
+                    LoginId = updatedUser.LoginData.Id,
+                    Password = updatedUser.LoginData.Password!,
+                    UserName = updatedUser.Profile.UserName,
+                    Telephone = updatedUser.Profile.UserTelephone,
+                    ProfileId = updatedUser.Profile.Id,
+                    Cart = updatedUser.Cart
+                };
+
+            await localStorageService.SetAsync(nameof(Token), token);
+            NavigationManager.NavigateTo("/profile", true);
+            return;
+        }
+
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            badRequestMessage = await response.Content.ReadAsStringAsync();
+            badRequestModal?.Open();
+        }
+    }
+
+    private void FocusOnPasswordInput()
+    {
+        inputPassword.FocusAsync();
+    }
+
+    private void OnNameLabelClick()
+    {
+        inputName.FocusAsync();
+    }
+
+    private async Task OnTelephoneLabelClick()
+    {
+        await js.InvokeVoidAsync("setEditTelFocus");
+    }
+
+    private void OnPasswordLabelClick()
+    {
+        inputPassword.FocusAsync();
+    }
+
+    private void OnAddressLabelClick()
+    {
+        inputAddress.FocusAsync();
+    }
+
+    private void OnEmailLabelClick()
+    {
+        emailInput.FocusAsync();
+    }
+
+    private void OnEyeClick()
+    {
+        showPassword = !showPassword;
+    }
+}

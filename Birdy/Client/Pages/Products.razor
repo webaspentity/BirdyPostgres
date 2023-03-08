@@ -1,0 +1,84 @@
+﻿@page "/products/{category}"
+@using System.Text.Json
+@inject HttpClient http
+@inject NavigationManager nav
+
+<PageTitle>@title</PageTitle>
+
+@if (cardsCreated)
+{
+    <Section Is4Section="true" Items="cards" ManyPages="true" Title="@title"></Section>
+}
+
+@code {
+    private string? category;
+    private List<CardModel> cards;
+    private IEnumerable<Product>? products;
+    private bool cardsCreated = false;
+    private string? title;
+
+    [Parameter]
+    public string? Category
+    {
+        get => category;
+        set
+        {
+            category = value;
+            cardsCreated = false;
+            Task.Run(()=> OnInitializedAsync());
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        products = await http.GetFromJsonAsync<IEnumerable<Product>>($"api/products/{Category?.ToLower()}", options);
+
+        if (products is not null)
+        {
+            cards = await CreateCardsAsync();
+            title = products.FirstOrDefault().Category.Name;
+            cardsCreated = true;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<List<CardModel>> CreateCardsAsync()
+    {
+        List<CardModel> result = new();
+
+        foreach (Product p in products)
+        {
+            CardModel card = new CardModel
+                {
+                    ProductId = p.Id,
+                    Href = $"/products/{p.Category?.Url}/{p.Id}",
+                    Image = new ImageModel { Source = p.ImageSource, Alt = p.Name },
+                    Quantity = 0,
+                    Remark = "Размер птицы: " + ((p.BirdSize is null) ? "не имеет значения" : (p.BirdSize.ToLower())),
+                    Title = p.Name,
+                    Weight = p.ProductsPrices.First().Weight,
+                    InStock = p.ProductsPrices.First().InStock,
+                    Description = p.Description,
+                    Theme = ThemeType.Light, 
+                    WeightsAndDiscounts = new(), 
+                    WeightsAndPrices = new(), 
+                    WeightsAndStocks = new()
+                };
+
+            foreach (ProductPrice pp in p.ProductsPrices)
+            {
+                card.WeightsAndPrices[pp.Weight] = pp.Price;
+                card.WeightsAndStocks[pp.Weight] = pp.InStock;
+
+                if (pp.Discounts is not null && pp.Discounts.Count > 0)
+                {
+                    card.WeightsAndDiscounts[pp.Weight] = pp.Discounts.First().Value;
+                }
+
+            }
+            result.Add(card);
+        }
+        return await Task.FromResult(result);
+    }
+}

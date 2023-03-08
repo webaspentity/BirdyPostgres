@@ -1,0 +1,23 @@
+﻿<button 
+    class=@((Current == Order) ? "bullet active" : "bullet") 
+    @onclick="UpdateCurrentValue" 
+    aria-label="Перейти на страницу" 
+    type="button"
+>@(Order + 1)</button>
+
+@code {
+    [Parameter]
+    public int Current { get; set; }
+    [Parameter]
+    public int Order { get; set; }
+    [Parameter]
+    public EventCallback<int> CurrentChanged { get; set; }
+
+    private async Task UpdateCurrentValue()
+    {
+        if (Current != Order){
+            Current = Order;
+            await CurrentChanged.InvokeAsync(Current);
+        }
+    }
+}

@@ -1,0 +1,71 @@
+﻿::deep .details__content {
+    text-align: justify;
+    padding: 1em;
+}
+
+::deep .details__description {
+    line-height: 1.5;
+}
+
+::deep .carousel {
+    grid-area: info;
+    min-height: unset;
+}
+
+.object-container ::deep .details {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        'image text'
+        'carousel carousel';
+}
+
+.object-container ::deep .details__image {
+    grid-area: image;
+}
+
+    .object-container ::deep .details__image img {
+        object-fit: cover;
+    }
+
+.object-container ::deep .details__content {
+    grid-area: text;
+}
+
+.object-container ::deep .carousel {
+    grid-area: carousel;
+}
+
+@media only screen and (max-width: 48em) {
+    ::deep .carousel__items {
+        min-width: 200%;
+    }
+
+    .object-container ::deep .details {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'image'
+            'text'
+            'carousel';
+    }
+
+    .object-container ::deep .details__image img {
+        object-fit: cover;
+    }
+}
+
+@media only screen and (max-width: 36.25em) {
+    ::deep .slide{
+        flex: 0 0 25%;
+    }
+}
+
+@media only screen and (max-width: 25.75em) {
+    ::deep .carousel__items {
+        min-width: 400%;
+    }
+
+    ::deep .slide {
+        flex: 0 0 25%;
+    }
+}
+

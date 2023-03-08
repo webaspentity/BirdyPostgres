@@ -1,0 +1,387 @@
+﻿@inject ILocalStorageService localStorageService
+@inject NavigationManager nav
+@inject CartService CartService
+@inject HttpClient http
+@using System.Text.Json
+
+<section class="details-section">
+    <Container>
+        <div class="details">
+            <div class="details__image">
+                @if(totalRaiting >= 1)
+                {
+                    <span class="details__raiting @(totalRaiting >= 4 ? "details__raiting_good" : (totalRaiting >= 3 && totalRaiting < 4) ? "details__raiting_normal" : "details__raiting_bad")">@totalRaiting</span>
+                }
+                <img src="@((Type == typeof(CardModel)) ? Item?.Image?.Source : (Type == typeof(Bird)) ? Bird?.ImageSource : (Type == typeof(Ingredient)) ? Ingredient?.ImageSource : null)"
+                     alt="@((Type == typeof(CardModel)) ? Item?.Image?.Alt : (Type == typeof(Bird)) ? Bird?.Name : (Type == typeof(Ingredient)) ? Ingredient?.Name : "Изображение")" />
+            </div>
+            <div class="details__content">
+                <h1 class="details__title">@((Type == typeof(CardModel)) ? Item?.Title : (Type == typeof(Bird)) ? Bird?.Name : (Type == typeof(Ingredient)) ? Ingredient?.Name : null)</h1>
+                <div class="details__description">
+                    @if (Type == typeof(CardModel) && Item?.Description is not null)
+                    {
+                        <p class="details__text">@Item.Description</p>
+                    }
+                    @if (Type == typeof(Bird))
+                    {
+                        <p class="details__text">@Bird?.Description</p>
+                    }
+                    @if (Type == typeof(Ingredient))
+                    {
+                        <p class="details__text">@Ingredient?.Description</p>
+                    }
+                </div>
+            </div>
+            
+            @if (IsProduct)
+            {
+                <div class="details__product">
+                    @if (Item.WeightsAndPrices.Count > 1)
+                    {
+                        <EditForm Model="Item">
+                            <InputRadioGroup @bind-Value="Item.Weight" class="noselect" Name="weight">
+                                <div class="details__radio">
+                                    @foreach (KeyValuePair<int, decimal> kvp in Item.WeightsAndPrices)
+                                    {
+                                        <label class=@((Item.Weight == kvp.Key) ? "details__weight-label checked" : "details__weight-label")>
+                                            <InputRadio TValue="int" Value="@kvp.Key" aria-hidden="true" Name="weight" />@(kvp.Key < 1000 ? $"{kvp.Key} г" : (((int)(kvp.Key / 1000)).ToString() + " кг"))
+                                            </label>
+                                    }
+                                </div>
+                            </InputRadioGroup>
+                        </EditForm>
+                    }
+                    <div class="details__price">
+                    @if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+                        {
+                            <span class="line-through small noselect">
+                                @(WeightsAndQuantity.ContainsKey(Item.Weight) ? Item.WeightsAndPrices[Item.Weight] * WeightsAndQuantity[Item.Weight] : Item.WeightsAndPrices[Item.Weight])
+                            </span>
+                            <span class="line-discount noselect">
+                                @(WeightsAndQuantity.ContainsKey(Item.Weight) ?
+                                    (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100) * WeightsAndQuantity[Item.Weight] :
+                                    (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100)
+                                    )
+                            </span><span> руб.</span>
+                        }
+                        else
+                        {
+                                <span class="noselect">
+                                    @(WeightsAndQuantity.ContainsKey(Item.Weight) ? Item.WeightsAndPrices[Item.Weight] * WeightsAndQuantity[Item.Weight] : Item.WeightsAndPrices[Item.Weight]) руб.
+                                </span>
+                        }
+
+                       </div>
+                    <AuthorizeView Roles="@UserRole.User">
+                        <Authorized>
+                            @if (WeightsAndQuantity.ContainsKey(Item.Weight))
+                            {
+                                <div class="details__controls noselect">
+                                    <button class="details__link" href="/buy" @onclick="()=> IsLeaveReview = !IsLeaveReview" type="button">Оставить отзыв</button>
+                                    <Quantity @bind-Value="@WeightsAndQuantity[Item.Weight]" OnDecrement="OnDecrementQuantityAsync" OnIncrement="OnIncrementQuantityAsync" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="details__controls noselect">
+                                    <button class="details__link" href="/buy" @onclick="()=> IsLeaveReview = !IsLeaveReview" type="button">Оставить отзыв</button>
+                                    <button class="details__btn" type="button" aria-label="Добавить в корзину" @onclick="AddToCart">Добавить в корзину</button>
+                                </div>
+                            }
+                        </Authorized>
+                        <NotAuthorized>
+                            <div class="details__controls noselect">
+                                <button class="details__btn" type="button" aria-label="Добавить в корзину" @onclick="()=> nav.NavigateTo(toLoginPage)">Добавить в корзину</button>
+                            </div>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            }
+            @if(Type == typeof(Bird))
+            {
+                <Carousel Items="Slides" Title="@CarouselTitle" />
+            }
+            @if (Type == typeof(Ingredient))
+            {
+                <Carousel Items="Slides" Title="@CarouselTitle" />
+            }
+        </div>
+    </Container>
+</section>
+
+@if (IsProduct && IsLeaveReview)
+{
+    <AuthorizeView Roles="@UserRole.User">
+        <Authorized>
+            <Container>
+                <div class="review-and-raiting noselect">
+                    <p class="review-and-raiting_label">Оцените продукт:</p>
+                    <Raiting @bind-Value="userRaiting" />
+                    <EditForm Model="newReview" method="post" Context="comment" OnValidSubmit="SendReview">
+                        <fieldset class="comment-content">
+                            <InputTextArea @bind-Value="newReview.Comment" />
+                            <button type="submit" aria-label="Отправить отзыв" class="comment-button" @onclick="SendReview">Отправить</button>
+                        </fieldset>
+                    </EditForm>
+                </div>
+            </Container>
+        </Authorized>
+    </AuthorizeView>
+}
+
+@if (IsProduct && reviews is not null && reviews.Count > 0)
+{
+    <Container>
+        <div class="reviews">
+            @foreach (ReviewModel model in reviews)
+            {
+                <Review Item="model" />
+            }
+        </div>
+    </Container>
+}
+
+@code {
+    private Dictionary<int, int> WeightsAndQuantity = new();
+    private string toLoginPage = "/login";
+    private List<ReviewModel>? reviews;
+    private bool IsLeaveReview = false;
+    private Birdy.Shared.Review newReview = new() {Comment = String.Empty};
+    private double totalRaiting;
+    private int userRaiting = 0;
+
+    [Parameter]
+    public IEnumerable<SlideModel>? Slides { get; set; }
+
+    [Parameter]
+    public Bird? Bird { get; set; }
+
+    [Parameter]
+    public Ingredient? Ingredient { get; set; }
+
+    [Parameter]
+    public ImageModel? Image { get; set; }
+
+    [Parameter]
+    public Type? Type { get; set; }
+
+    [Parameter]
+    public CardModel? Item { get; set; } = null;
+
+    [Parameter]
+    public bool IsProduct { get; set; }
+
+    [Parameter]
+    public string? CarouselTitle { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+
+        if (token.Role.Equals(UserRole.User))
+        {
+            if ((token.Cart?.Items is not null) && (token.Cart?.Items.FirstOrDefault(ci => ci.ProductId == Item?.ProductId) is not null))
+            {
+                foreach (CartItem ci in token.Cart.Items.Where(ci => ci.ProductId == Item.ProductId))
+                {
+                    WeightsAndQuantity[ci.Weight] = ci.Quantity;
+                }
+            }
+        }
+
+        if (IsProduct)
+        {
+            JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{AppData.BaseUri}/api/review/getbyproductid/{Item?.ProductId}");
+            var response = await http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                reviews = await response.Content.ReadFromJsonAsync<List<ReviewModel>>(options);
+
+                Random rnd = new Random();
+                int randomImage;
+
+                foreach (ReviewModel model in reviews)
+                {
+                    randomImage = rnd.Next(1, 5);
+
+                    model.ImageSource =
+                                randomImage == 1 ? "/images/user_avatar_1.png" :
+                                randomImage == 2 ? "/images/user_avatar_2.png" :
+                                randomImage == 3 ? "/images/user_avatar_3.png" : "/images/user_avatar_4.png";
+                }
+            }
+
+            var raitingRequest = new HttpRequestMessage(HttpMethod.Get, $"{AppData.BaseUri}/api/raiting/getproductotalraiting/{Item?.ProductId}");
+            var raitingResponse = await http.SendAsync(raitingRequest);
+
+            totalRaiting = await raitingResponse.Content.ReadFromJsonAsync<double>();
+        }
+    }
+
+    private async Task AddToCart()
+    {
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+
+        if (!WeightsAndQuantity.ContainsKey(Item.Weight))
+        {
+            CartItem cartItem = new CartItem
+                {
+                    ProductId = Item.ProductId,
+                    CartId = token.Cart.Id,
+                    Quantity = 1,
+                    Weight = Item.Weight
+                };
+
+            WeightsAndQuantity[Item.Weight] = 1;
+
+            if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+            {
+                cartItem.Price = (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100);
+            }
+            else
+            {
+                cartItem.Price = Item.WeightsAndPrices[Item.Weight];
+            }
+
+            CartItem newItem = await CartService.AddItemAsync(cartItem);
+
+            if (newItem is not null)
+            {
+                token.Cart.Items.Add(newItem);
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+                await localStorageService.SetAsync(nameof(Token), token);
+                await CartService.UpdateCounter();
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task OnIncrementQuantityAsync()
+    {
+        if (WeightsAndQuantity[Item.Weight] < 100)
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            int id = item.Id;
+
+            int response = await CartService.IncrementQuantityAsync(id);
+
+            if (response == 1)
+            {
+                item.Quantity += 1;
+
+                if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+                {
+                    item.Price = (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100) * item.Quantity;
+                }
+                else
+                {
+                    item.Price = Item.WeightsAndPrices[Item.Weight] * item.Quantity;
+                }
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task OnDecrementQuantityAsync()
+    {
+        if (WeightsAndQuantity[Item.Weight] == 0)
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            int id = item.Id;
+
+            int response = await CartService.DeleteItemAsync(id);
+
+            if (response == 1)
+            {
+                WeightsAndQuantity.Remove(Item.Weight);
+                token.Cart.Items.Remove(item);
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                await CartService.UpdateCounter();
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            int id = item.Id;
+
+            int response = await CartService.DecrementQuantityAsync(id);
+
+            if (response == 1)
+            {
+                item.Quantity -= 1;
+
+                if (Item.WeightsAndDiscounts.ContainsKey(Item.Weight))
+                {
+                    item.Price = (Item.WeightsAndPrices[Item.Weight] - Item.WeightsAndPrices[Item.Weight] * Item.WeightsAndDiscounts[Item.Weight] / 100) * item.Quantity;
+                }
+                else
+                {
+                    item.Price = Item.WeightsAndPrices[Item.Weight] * item.Quantity;
+                }
+
+                token.Cart.TotalCost = await CartService.GetTotalCostAsync(token.Cart.Id);
+
+                await localStorageService.SetAsync(nameof(Token), token);
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task SaveReview()
+    {
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+        newReview.ProductId = Item.ProductId;
+        newReview.ReviewDate = DateTime.Now;
+        newReview.UserId = token.Id;
+
+        var response = await http.PostAsJsonAsync($"{AppData.BaseUri}/api/review/save", newReview);
+    }
+
+    private async Task AddRaiting()
+    {
+        
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+
+        Birdy.Shared.Raiting raiting = new Birdy.Shared.Raiting();
+        raiting.Value = userRaiting;
+        raiting.ProductId = Item.ProductId;
+        raiting.UserId = token.Id;
+
+        var response = await http.PostAsJsonAsync($"{AppData.BaseUri}/api/raiting/add", raiting);
+    }
+
+    private async Task SendReview()
+    {
+        bool changed = false; 
+        if (!String.IsNullOrEmpty(newReview.Comment))
+        {
+            await SaveReview();
+            if (!changed) changed = true;
+        }
+
+        if(userRaiting >= 1)
+        {
+            await AddRaiting();
+            if (!changed) changed = true;
+        }
+        if (changed)
+        {
+            nav.NavigateTo(nav.Uri, true);
+        }
+    }
+}

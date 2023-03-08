@@ -1,0 +1,36 @@
+﻿@inject HttpClient http
+@using System.Text.Json
+
+<div class="dropdown">
+    <button class="dropdown__title noselect" type="button">Каталог</button>
+    <ul class="dropdown__items">
+        @if (categories is not null)
+        {
+            foreach (Category category in categories)
+            {
+                <li class="dropdown__item">
+                    <NavLink class="dropdown__link" href="@("products/" + category.Url)" @onclick="DropdownLinkClick" rel="noopener">@category.Name</NavLink>
+                </li>
+            }
+        }
+
+    </ul>
+</div>
+
+@code {
+    private IEnumerable<Category>? categories;
+
+    [Parameter]
+    public EventCallback DropdownLinkClick { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCategories();
+    }
+
+    private async Task GetCategories()
+    {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        categories = await http.GetFromJsonAsync<IEnumerable<Category>>("api/categories", options);
+    }
+}

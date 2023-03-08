@@ -1,0 +1,134 @@
+﻿.header {
+    padding: 2em 0;
+    background-color: #fff;
+    box-sizing: border-box;
+    box-shadow: 0px 10px 60px rgba(0, 0, 0, 0.05), inset 0px -5px 15px rgba(255, 255, 255, 0.44);
+}
+
+    .header ::deep .container {
+        display: grid;
+        grid-column-gap: 6em;
+        grid-row-gap: 1em;
+        align-items: center;
+        grid-template-columns: auto 1fr auto auto;
+        grid-template-rows: auto auto;
+        grid-template-areas:
+            'logo . . account'
+            'menu menu search search';
+    }
+
+    .header ::deep .logo {
+        grid-area: logo;
+    }
+
+    .header ::deep .account {
+        grid-area: account;
+        justify-self: end;
+    }
+
+    .header ::deep .menu {
+        grid-area: menu;
+    }
+
+    .header ::deep .search {
+        grid-area: search;
+    }
+
+        .header ::deep .container.container_searching {
+            grid-template-areas:
+                'logo . . account'
+                'search search search search';
+        }
+
+@media only screen and (max-width: 48em) {
+    .header {
+        padding: 0.75em 0 0 0;
+        position: sticky;
+        top: 0;
+        width: 100vw;
+        max-width: 100%;
+        z-index: 10;
+        box-shadow: 1px 1px 20px rgba(0,0,0,0.4);
+    }
+
+        .header::-webkit-scrollbar {
+            width: 0.8em;
+            transition: 1s;
+        }
+
+        .header::-webkit-scrollbar-track {
+            background-color: #f9f9f9;
+        }
+
+        .header::-webkit-scrollbar-thumb {
+            background-color: #363A4D;
+            border-radius: 15px;
+            border: 0.2em solid #f9f9f9;
+        }
+
+        .header ::deep .container, .header ::deep .container.container_searching {
+            grid-column-gap: 3em;
+            grid-row-gap: 1em;
+            grid-template-columns: 1fr 1fr;
+            grid-auto-rows: auto;
+            overflow-y: hidden;
+            grid-template-areas:
+                'logo burger';
+        }
+
+        .header ::deep .menu {
+            justify-self: center;
+        }
+
+        .header ::deep .burger {
+            grid-area: burger;
+            justify-self: end;
+        }
+
+        .header ::deep .menu,
+        .header ::deep .search,
+        .header ::deep .account {
+            position: absolute;
+            transform: scale(0);
+            transition: transform .3s ease;
+            opacity: 0;
+        }
+
+        .header.active, .header.active:focus-within{
+            max-height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 1em;
+        }
+
+            .header.active ::deep .container {
+                grid-template-areas:
+                    'logo burger'
+                    'account account'
+                    'search search'
+                    'menu menu';
+                grid-row-gap: 2em;
+            }
+
+            .header.active ::deep .menu {
+                grid-area: menu;
+            }
+
+            .header.active ::deep .account {
+                grid-area: account;
+                background-color: lightyellow;
+                padding: 1em;
+                border-radius: 15px;
+            }
+
+            .header.active ::deep .search {
+                grid-area: search;
+            }
+
+            .header.active ::deep .menu,
+            .header.active ::deep .search,
+            .header.active ::deep .account {
+                position: static;
+                transform: scale(1);
+                opacity: 1;
+            }
+}

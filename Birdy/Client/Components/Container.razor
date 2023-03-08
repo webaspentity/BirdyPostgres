@@ -1,0 +1,11 @@
+﻿<div class=@((Class is null) ? cssClass : (cssClass + " " + Class))>
+    @ChildContent
+</div>
+
+@code {
+    private string cssClass = "container";
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public string Class { get; set; }
+}

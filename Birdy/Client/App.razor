@@ -1,0 +1,40 @@
+﻿@inject ILocalStorageService localStorageService
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (!context.User.Identity.IsAuthenticated)
+                    {
+                        <Redirect To="/login" />
+                    }
+                    else
+                    {
+                        <p class="nothing">Вы не авторизованы для доступа к этому ресурсу.</p>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <PageTitle>Не найдено</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert" class="nothing">Извините по этому адресу ничего нет.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
+
+        if (token is null)
+        {
+            token = new Token();
+
+            await localStorageService.SetAsync(nameof(Token), token);
+        }
+    }
+}
