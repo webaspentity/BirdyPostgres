@@ -22,7 +22,6 @@
     </PackageReference>
     <PackageReference Include="Npgsql" Version="7.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
-    <PackageReference Include="Yandex.Checkout.V3" Version="1.7.0" />
   </ItemGroup>
 
   <ItemGroup>
