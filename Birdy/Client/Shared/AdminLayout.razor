@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<header>
+    <Container>
+        <AdminMenu />
+    </Container>
+</header>
+
+
+<main class="main">
+    <article class="main__content">
+        <AuthorizeView Roles="@UserRole.Admin">
+            <Authorized>
+                @Body
+            </Authorized>
+        </AuthorizeView>
+    </article>
+</main>
+
+<Footer />

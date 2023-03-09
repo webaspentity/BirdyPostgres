@@ -1,0 +1,57 @@
+﻿.menu {
+    font-size: 1.8em;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.menu__items {
+    display: flex;
+    column-gap: 2.2222222em;
+    row-gap: 1em;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.menu__item {
+    overflow: hidden;
+    transition: .2s ease;
+}
+
+    .menu__item:hover {
+        cursor: pointer;
+    }
+
+        .menu__item:hover ::deep .menu__link, .menu__item ::deep .menu__link:focus, .menu__item ::deep .menu__link.active {
+            background-color: #569482;
+            color: white;
+        }
+
+::deep .menu__link {
+    text-decoration: none;
+    color: #4F4F4F;
+    display: inline-block;
+    padding: 0.4em;
+    transition: .2s ease;
+    border-radius: 10px;
+}
+
+    ::deep .menu__link:focus {
+        outline: none;
+    }
+
+@media only screen and (max-width: 48em) {
+
+    .menu {
+        padding: 1.5em 0;
+    }
+
+    .menu__items {
+        flex-direction: column;
+    }
+
+    .menu__dropdown:hover {
+        box-shadow: unset;
+    }
+}

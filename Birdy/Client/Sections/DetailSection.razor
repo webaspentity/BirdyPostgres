@@ -354,7 +354,7 @@
 
     private async Task AddRaiting()
     {
-        
+
         Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
 
         Birdy.Shared.Raiting raiting = new Birdy.Shared.Raiting();
@@ -362,23 +362,32 @@
         raiting.ProductId = Item.ProductId;
         raiting.UserId = token.Id;
 
-        var response = await http.PostAsJsonAsync($"{AppData.BaseUri}/api/raiting/add", raiting);
+        try
+        {
+            var response = await http.PostAsJsonAsync($"{AppData.BaseUri}/api/raiting/add", raiting);
+        }catch(Exception exc)
+        {
+            Console.WriteLine("EXCEPTION: " + exc.Message);
+        }
+
     }
 
     private async Task SendReview()
     {
-        bool changed = false; 
+        bool changed = false;
+
         if (!String.IsNullOrEmpty(newReview.Comment))
         {
             await SaveReview();
-            if (!changed) changed = true;
+            changed = true;
         }
-
-        if(userRaiting >= 1)
+        
+        if (userRaiting >= 1)
         {
             await AddRaiting();
             if (!changed) changed = true;
         }
+
         if (changed)
         {
             nav.NavigateTo(nav.Uri, true);

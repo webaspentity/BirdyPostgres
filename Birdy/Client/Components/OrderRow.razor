@@ -1,0 +1,108 @@
+﻿@inject HttpClient http
+@using System.Text.Json
+@using System.Text
+
+<tr class="row">
+    <td>@Item.Id</td>
+    <td>@Item.OrderDate.ToShortDateString()</td>
+    <td class="row__td_date">
+        <InputDate @bind-Value="Item.DeliveryDate" TValue="DateTime" class="@(Item.DeliveryDate.Date < DateTime.Now.Date ? "red" : String.Empty)" @onchange="OnDateChange"/>
+        <buton @onclick="DeliveryChangeHandler" class="@((Item.DeliveryDate.Date < DateTime.Now.Date || Item.DeliveryDate.Date.Equals(initialDate.Date)) ? " row__btn_date" : "row__btn_date changed" )">ok</buton>
+        </td>
+    <td>
+        <InputSelect @bind-Value="@Item.Status" >
+            @foreach (string s in SelectOptions)
+            {
+                <option value="@s" @onclick="StatusChangeHandler">@s</option>
+            }
+        </InputSelect>
+    </td>
+    <td>@Item.User?.Profile.UserName</td>
+    <td>@Item.User?.LoginData.Email</td>
+    <td>@Item.User?.Profile.UserTelephone</td>
+    <td>@Item.User?.Profile.UserAddress</td>
+    <td>@Item.Price</td>
+    <td>@(Item.IsPaid ? "Есть" : "Нет")</td>
+</tr>
+
+@code{
+    private DateTime initialDate;
+    private bool disabled = true;
+
+    private string initialStatus = String.Empty;
+
+    [Parameter]
+    public Order? Item { get; set;}
+
+    [Parameter]
+    public List<string>? SelectOptions { get; set; }
+
+    JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+    protected override void OnInitialized()
+    {
+        @if(Item is not null)
+        {
+            initialDate = Item.DeliveryDate;
+            initialStatus = Item.Status;
+        }
+    }
+
+    private async Task DeliveryChangeHandler()
+    {
+        if (Item.DeliveryDate.Date >= DateTime.Now.Date)
+        {
+            var json = JsonSerializer.Serialize(Item, options);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(HttpMethod.Patch, $"{AppData.BaseUri}/api/order/edit/delivery/{Item}")
+                {
+                    Content = content
+                };
+            var response = await http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                initialDate = Item.DeliveryDate;
+                Console.WriteLine("SUCCESS!");
+            }
+            else
+            {
+                Item.DeliveryDate = initialDate;
+                Console.WriteLine("ERROR!");
+            }
+        }
+        else
+        {
+            Console.WriteLine("INITIAL: " + initialDate);
+            Item.DeliveryDate = initialDate;
+            Console.WriteLine("DELIVERY: " + Item.DeliveryDate);
+        }
+    }
+
+    private async Task StatusChangeHandler()
+    {
+        Console.WriteLine("StatusChangeHandler");
+        var json = JsonSerializer.Serialize(Item, options);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var request = new HttpRequestMessage(HttpMethod.Patch, $"{AppData.BaseUri}/api/order/edit/status/{Item}")
+            {
+                Content = content
+            };
+        var response = await http.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            initialStatus = Item.Status;
+        }
+        else
+        {
+            Item.Status = initialStatus;
+        }
+    }
+
+    private void OnDateChange()
+    {
+        if (Item.DeliveryDate.Date != initialDate.Date) disabled = false;
+        else disabled = true;
+    }
+}

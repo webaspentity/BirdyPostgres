@@ -1,7 +1,9 @@
 ﻿@page "/admin"
+@layout AdminLayout
+@attribute [Authorize(Roles = "Administrator")]
 
-<AuthorizeView Roles="@UserRole.Admin">
-    <Authorized>
 
-    </Authorized>
-</AuthorizeView>
+
+@code {
+
+}

@@ -1,0 +1,25 @@
+﻿<nav class="menu">
+    <ul class="menu__items">
+        @foreach (LinkModel link in MenuLinks)
+        {
+            <li class="menu__item" tabindex="-1">
+                <NavLink class="menu__link noselect" href="@link.Url" @onclick="MenuLinkClick" rel="noopener">@link.Text</NavLink>
+            </li>
+        }
+    </ul>
+</nav>
+
+@code {
+    [Parameter]
+    public EventCallback MenuLinkClick { get; set; }
+
+    private static List<LinkModel> MenuLinks = new()
+    {
+        new() {Text = "Заказы", Url = "/admin/orders"},
+        new() {Text = "Категории", Url = "/admin/categories"},
+        new() {Text = "Товары", Url = "/admin/products"},
+        new() {Text = "Птицы", Url = "/admin/birds"},
+        new() {Text = "Ингредиенты", Url = "/admin/ingredients"},
+        new() {Text = "Пользователи", Url = "/admin/users"}
+    };
+}

@@ -3,9 +3,7 @@
 <header class=@cssClass id="header">
     <Container>
         <Logo />
-
-            <Menu MenuLinkClick="OnMenuLinkClick" />
-
+        <Menu MenuLinkClick="OnMenuLinkClick" />
         <Burger OnClick="ToggleHeaderState" @ref=burger />
         <Account OnAccountElementClick="OnMenuLinkClick" />
         <Search OnInputClick="()=> modal.Open()" />

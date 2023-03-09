@@ -1,0 +1,139 @@
+﻿@page "/admin/orders"
+@layout AdminLayout
+@attribute [Authorize(Roles = "Administrator")]
+@inject HttpClient http
+@using System.Text.Json
+@using System.Reflection
+@inject NavigationManager nav
+
+<Container>
+    <div class="orders">
+        @if (empty)
+        {
+            <p>Пусто</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td class="table__column" @onclick="()=> {orders = byId ? orders.OrderBy(o => o.Id).ToList() : orders.OrderByDescending(o => o.Id).ToList(); byId = !byId;}">ID</td>
+                        <td class="table__column" @onclick="()=> {orders = byOrderDate ? orders.OrderBy(o => o.OrderDate).ToList() : orders.OrderByDescending(o => o.OrderDate).ToList(); byOrderDate = !byOrderDate;}">Дата заказа</td>
+                        <td class="table__column" @onclick="()=> {orders = byDeliveryDate ? orders.OrderBy(o => o.DeliveryDate).ToList() : orders.OrderByDescending(o => o.DeliveryDate).ToList(); byDeliveryDate = !byDeliveryDate;}">Дата доставки</td>
+                        <td class="table__column" @onclick="()=> {orders = byStatus ? orders.OrderBy(o => o.Status).ToList() : orders.OrderByDescending(o => o.Status).ToList(); byStatus = !byStatus;}">Статус</td>
+                        <td class="table__column" @onclick="()=> {orders = byName ? orders.OrderBy(o => o.User?.Profile.UserName).ToList() : orders.OrderByDescending(o => o.User?.Profile.UserName).ToList(); byName = !byName;}">Имя пользователя</td>
+                        <td class="table__column" @onclick="()=> {orders = byEmail ? orders.OrderBy(o => o.User?.LoginData.Email).ToList() : orders.OrderByDescending(o => o.User?.LoginData.Email).ToList(); byEmail = !byEmail;}">Почта</td>
+                        <td class="table__column" @onclick="()=> {orders = byTelephone ? orders.OrderBy(o => o.User?.Profile.UserTelephone).ToList() : orders.OrderByDescending(o => o.User?.Profile.UserTelephone).ToList(); byTelephone = !byTelephone;}">Телефон</td>
+                        <td class="table__column" @onclick="()=> {orders = byAddress ? orders.OrderBy(o => o.User?.Profile.UserAddress).ToList() : orders.OrderByDescending(o => o.User?.Profile.UserAddress).ToList(); byAddress = !byAddress;}">Адрес</td>
+                        <td class="table__column" @onclick="()=> {orders = byPrice ? orders.OrderBy(o => o.Price).ToList() : orders.OrderByDescending(o => o.Price).ToList(); byPrice = !byPrice;}">Сумма</td>
+                        <td class="table__column" @onclick="()=> {orders = byPaid ? orders.OrderBy(o => o.IsPaid).ToList() : orders.OrderByDescending(o => o.IsPaid).ToList(); byPaid = !byPaid;}">Оплата</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Order o in orders)
+                    {
+                        <OrderRow Item="o" SelectOptions="selectOptions" @key="o.Id"/>
+                    @*<tr @key="o">
+                            <td>@o.Id</td>
+                            <td>@o.OrderDate.ToShortDateString()</td>
+                            <td><InputDate @bind-Value="@o.DeliveryDate" TValue="DateTime" @oninput="()=> DeliveryChangedHandler(o)" /></td>
+                            <td>
+                                <InputSelect @bind-Value="@o.Status">
+                                    @foreach (string s in selectOptions)
+                                    {
+                                        <option value="@s">@s</option>
+                                    }
+                                </InputSelect>
+                            </td>
+                            <td>@o.User?.Profile.UserName</td>
+                            <td>@o.User?.LoginData.Email</td>
+                            <td>@o.User?.Profile.UserTelephone</td>
+                            <td>@o.User?.Profile.UserAddress</td>
+                            <td>@o.Price</td>
+                            <td>@(o.IsPaid ? "Есть" : "Нет")</td>
+                    </tr>*@
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</Container>
+
+<Modal OnClose="ModalCloseHandler" @ref="modal">
+    @if (modalBlock)
+    {
+        <p style="text-align: center;box-sizing:border-box;padding:1em 2em;">@modalBlockMessage</p>
+    }
+    else
+    {
+        @if (responseSuccess)
+        {
+            <p style="text-align: center;box-sizing:border-box;padding:em 2em;">@modalSuccessMessage</p>
+        }
+        else
+        {
+            <p style="text-align: center;box-sizing:border-box;padding:1em 2em;">@modalErrorMessage</p>
+        }
+
+    }
+</Modal>
+
+@code {
+    private Modal modal;
+    private bool byId = false;
+    private bool byOrderDate = false;
+    private bool byDeliveryDate = false;
+    private bool byStatus = false;
+    private bool byName = false;
+    private bool byEmail = false;
+    private bool byTelephone = false;
+    private bool byAddress = false;
+    private bool byPaid = false;
+    private bool byPrice = false;
+    private List<Order> orders = new();
+    JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    private bool empty = true;
+    private List<string> selectOptions = new();
+    private string selectedStatus = String.Empty;
+    private bool modalBlock = false;
+    private bool responseSuccess = false;
+    private readonly string modalBlockMessage = "Сохранение...";
+    private readonly string modalSuccessMessage = "Изменение сохранено успешно.";
+    private readonly string modalErrorMessage = "Неудача!.";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{AppData.BaseUri}/api/order/getall");
+        var response = await http.SendAsync(request);
+        Console.WriteLine("RESPONSE: " + response.Content.ReadAsStringAsync().Result);
+
+        if (response.IsSuccessStatusCode)
+        {
+            orders = await response.Content.ReadFromJsonAsync<List<Order>>(options);
+            empty = false;
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            if (!empty) empty = true;
+        }
+
+        Type type = typeof(OrderStatus);
+        PropertyInfo[] properties = type.GetProperties();
+
+        foreach (PropertyInfo prop in properties)
+        {
+            selectOptions.Add(prop.GetValue(null).ToString());
+        }
+    }
+
+    private void ModalCloseHandler()
+    {
+        if (responseSuccess) responseSuccess = false;
+        StateHasChanged();        
+    }
+
+    private void OnInput(Order o)
+    {
+        Console.WriteLine("ONIPUT HANDLER");
+    }
+}

@@ -1,0 +1,38 @@
+﻿p{
+    font-size: 1.4em;
+    text-align: center;
+}
+
+.orders{
+    font-size: 1.6em;
+}
+
+.table {
+    width: 100%;
+    -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    border-radius: 15px;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.table thead{
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+thead td{
+    padding: 0.25em;
+    text-align: center;
+}
+
+    .table__column {
+        border-radius: 5px;
+    }
+
+.table__column:hover {
+    cursor: pointer;
+    background-color: mediumpurple;
+    color: white;
+}
