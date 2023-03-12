@@ -80,6 +80,10 @@ public class CartController : ControllerBase
             {
                 item.Quantity += 1;
             }
+            else
+            {
+                return BadRequest();
+            }
 
             if (discount is not null)
             {

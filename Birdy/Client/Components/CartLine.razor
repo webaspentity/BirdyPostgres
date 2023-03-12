@@ -105,7 +105,7 @@
         if (Item?.Quantity < 100)
         {
             Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
-            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id);
+            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id && ci.Weight == Item.Weight);
 
             int response = await CartService.IncrementQuantityAsync(Item.Id);
 
@@ -129,6 +129,10 @@
                 StateHasChanged();
                 cartLines.UpdateTotal();
             }
+            else
+            {
+                Item.Quantity -= 1;
+            }
         }
     }
 
@@ -137,7 +141,7 @@
         if (Item.Quantity == 0)
         {
             Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
-            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id);
+            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id && ci.Weight == Item.Weight);
             int response = await CartService.DeleteItemAsync(Item.Id);
 
             if (response == 1)
@@ -155,7 +159,7 @@
         else
         {
             Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
-            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id);
+            CartItem item = token.Cart.Items.First(ci => ci.Id == Item.Id && ci.Weight == Item.Weight);
             int response = await CartService.DecrementQuantityAsync(Item.Id);
 
             if (response == 1)

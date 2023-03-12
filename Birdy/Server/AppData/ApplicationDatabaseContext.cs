@@ -42,7 +42,7 @@ public class ApplicationDatabaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseNpgsql("Server=81.200.151.143;Port=5432;Database=default_db;User Id=gen_user;Password=hXigb4MpThLd;");
+        options.UseNpgsql("Server=46.19.65.63;Port=5432;Database=default_db;User Id=gen_user;Password=hXigb4MpThLd;");
         //options.UseNpgsql("Host=localhost;Port=5000;Database=birdydb;Username=postgres;Password=12345678");
         //options.UseNpgsql("Server=localhost;Port=32768;Database=birdy;User Id=postgres;Password=postgrespw;");
         options.EnableSensitiveDataLogging(true);

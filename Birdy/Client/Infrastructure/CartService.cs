@@ -54,7 +54,7 @@ public class CartService
     {
         var request = new HttpRequestMessage(HttpMethod.Patch, $"{AppData.BaseUri}/api/cart/increment/{id}");
         var response = await HttpClient.SendAsync(request);
-
+        
         if (response.IsSuccessStatusCode)
         {
             await UpdateCounter();

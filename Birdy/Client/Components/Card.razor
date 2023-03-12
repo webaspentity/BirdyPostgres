@@ -149,6 +149,7 @@
         {
             if ((token.Cart?.Items is not null) && (token.Cart?.Items.FirstOrDefault(ci => ci.ProductId == Item?.ProductId) is not null))
             {
+                Item.Weight = token.Cart?.Items.FirstOrDefault(ci => ci.ProductId == Item?.ProductId).Weight ?? 0;
                 foreach (CartItem ci in token.Cart.Items.Where(ci => ci.ProductId == Item.ProductId))
                 {
                     WeightsAndQuantity[ci.Weight] = ci.Quantity;
@@ -162,7 +163,7 @@
         if (WeightsAndQuantity[Item.Weight] < 100)
         {
             Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
-            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId && ci.Weight == Item.Weight);
             int id = item.Id;
 
             int response = await CartService.IncrementQuantityAsync(id);
@@ -185,6 +186,10 @@
                 await localStorageService.SetAsync(nameof(Token), token);
                 StateHasChanged();
             }
+            else
+            {
+                WeightsAndQuantity[Item.Weight] -= 1;
+            }
         }
     }
 
@@ -193,7 +198,7 @@
         if (WeightsAndQuantity[Item.Weight] == 0)
         {
             Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
-            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId && ci.Weight == Item.Weight);
             int id = item.Id;
 
             int response = await CartService.DeleteItemAsync(id);
@@ -213,7 +218,7 @@
         else
         {
             Token? token = await localStorageService.GetAsync<Token>(nameof(Token));
-            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId);
+            CartItem item = token.Cart.Items.First(ci => ci.ProductId == Item.ProductId && ci.Weight == Item.Weight);
             int id = item.Id;
 
             int response = await CartService.DecrementQuantityAsync(id);
