@@ -12,6 +12,14 @@
         </Authorized>
     </AuthorizeView>
 
+    <AuthorizeView Roles="Administrator">
+        <Authorized>
+            <button class="account__cart" type="button" aria-label="Корзина" @onclick="GoToAdmin" role="link">
+                <img src="images/icons/admin.png" alt="Редактирование" />
+            </button>
+        </Authorized>
+    </AuthorizeView>
+
     <AuthorizeView Roles="Administrator, CommonUser">
         <Authorized>
             <button class="account__profile" type="button" aria-label="Профиль" role="link" @onclick="GoToProfile">
@@ -48,6 +56,12 @@
     private async Task GoToCart()
     {
         nav.NavigateTo("/cart");
+        if (OnAccountElementClick.HasDelegate) await OnAccountElementClick.InvokeAsync();
+    }
+
+    private async Task GoToAdmin()
+    {
+        nav.NavigateTo("/admin");
         if (OnAccountElementClick.HasDelegate) await OnAccountElementClick.InvokeAsync();
     }
 
