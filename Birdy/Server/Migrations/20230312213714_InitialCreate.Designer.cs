@@ -3,16 +3,16 @@ using System;
 using Birdy.Server.AppData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Birdy.Server.Migrations
 {
     [DbContext(typeof(ApplicationDatabaseContext))]
-    [Migration("20230312131842_InitialCreate")]
+    [Migration("20230312213714_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -21,9 +21,9 @@ namespace Birdy.Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Birdy.Shared.Bird", b =>
                 {
@@ -31,10 +31,10 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageSource")
                         .HasMaxLength(100)
@@ -236,7 +236,7 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BirdId")
                         .HasColumnType("int");
@@ -259,10 +259,10 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("TotalCost")
-                        .HasColumnType("money");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -325,13 +325,13 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("money");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -357,17 +357,17 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasMaxLength(60)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
 
@@ -439,7 +439,7 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("date");
@@ -463,202 +463,194 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 1,
-                            EndDate = new DateTime(2023, 4, 6, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 18,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 18
+                            EndDate = new DateTime(2023, 4, 9, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 2,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 21
                         },
                         new
                         {
                             Id = 2,
-                            EndDate = new DateTime(2023, 3, 23, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 24,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 16
+                            EndDate = new DateTime(2023, 3, 30, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 3,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 12
                         },
                         new
                         {
                             Id = 3,
-                            EndDate = new DateTime(2023, 4, 5, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 29,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 12
-                        },
-                        new
-                        {
-                            Id = 4,
-                            EndDate = new DateTime(2023, 4, 8, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 32,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 14
-                        },
-                        new
-                        {
-                            Id = 5,
-                            EndDate = new DateTime(2023, 3, 19, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 36,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 16
-                        },
-                        new
-                        {
-                            Id = 6,
-                            EndDate = new DateTime(2023, 4, 6, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 40,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 16
-                        },
-                        new
-                        {
-                            Id = 7,
-                            EndDate = new DateTime(2023, 4, 5, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 45,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 13
-                        },
-                        new
-                        {
-                            Id = 8,
-                            EndDate = new DateTime(2023, 4, 5, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 46,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 23
-                        },
-                        new
-                        {
-                            Id = 9,
-                            EndDate = new DateTime(2023, 3, 31, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 53,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 15
-                        },
-                        new
-                        {
-                            Id = 10,
-                            EndDate = new DateTime(2023, 4, 2, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 57,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 17
-                        },
-                        new
-                        {
-                            Id = 11,
-                            EndDate = new DateTime(2023, 3, 27, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 65,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 22
-                        },
-                        new
-                        {
-                            Id = 12,
-                            EndDate = new DateTime(2023, 4, 8, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 126,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 11
-                        },
-                        new
-                        {
-                            Id = 13,
-                            EndDate = new DateTime(2023, 4, 5, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 127,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 14
-                        },
-                        new
-                        {
-                            Id = 14,
-                            EndDate = new DateTime(2023, 3, 21, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 128,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 12
-                        },
-                        new
-                        {
-                            Id = 15,
-                            EndDate = new DateTime(2023, 3, 30, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 132,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 10
-                        },
-                        new
-                        {
-                            Id = 16,
-                            EndDate = new DateTime(2023, 3, 23, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 137,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
+                            EndDate = new DateTime(2023, 3, 28, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 23,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
                             Value = 18
                         },
                         new
                         {
-                            Id = 17,
-                            EndDate = new DateTime(2023, 4, 4, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 149,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 24
-                        },
-                        new
-                        {
-                            Id = 18,
-                            EndDate = new DateTime(2023, 3, 27, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 165,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 10
-                        },
-                        new
-                        {
-                            Id = 19,
-                            EndDate = new DateTime(2023, 4, 4, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 182,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 16
-                        },
-                        new
-                        {
-                            Id = 20,
-                            EndDate = new DateTime(2023, 3, 31, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 189,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 15
-                        },
-                        new
-                        {
-                            Id = 21,
-                            EndDate = new DateTime(2023, 4, 8, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 194,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 21
-                        },
-                        new
-                        {
-                            Id = 22,
-                            EndDate = new DateTime(2023, 3, 23, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 198,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 21
-                        },
-                        new
-                        {
-                            Id = 23,
-                            EndDate = new DateTime(2023, 3, 27, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 225,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
+                            Id = 4,
+                            EndDate = new DateTime(2023, 3, 22, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 32,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
                             Value = 19
                         },
                         new
                         {
-                            Id = 24,
-                            EndDate = new DateTime(2023, 3, 19, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 230,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
+                            Id = 5,
+                            EndDate = new DateTime(2023, 4, 2, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 36,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
                             Value = 17
                         },
                         new
                         {
-                            Id = 25,
-                            EndDate = new DateTime(2023, 3, 26, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            ProductPriceId = 237,
-                            StartDate = new DateTime(2023, 3, 12, 16, 18, 42, 503, DateTimeKind.Local).AddTicks(5018),
-                            Value = 22
+                            Id = 6,
+                            EndDate = new DateTime(2023, 3, 30, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 42,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 17
+                        },
+                        new
+                        {
+                            Id = 7,
+                            EndDate = new DateTime(2023, 3, 28, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 60,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 20
+                        },
+                        new
+                        {
+                            Id = 8,
+                            EndDate = new DateTime(2023, 3, 21, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 67,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 15
+                        },
+                        new
+                        {
+                            Id = 9,
+                            EndDate = new DateTime(2023, 4, 7, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 71,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 23
+                        },
+                        new
+                        {
+                            Id = 10,
+                            EndDate = new DateTime(2023, 3, 22, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 74,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 14
+                        },
+                        new
+                        {
+                            Id = 11,
+                            EndDate = new DateTime(2023, 4, 2, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 79,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 19
+                        },
+                        new
+                        {
+                            Id = 12,
+                            EndDate = new DateTime(2023, 3, 25, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 83,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 20
+                        },
+                        new
+                        {
+                            Id = 13,
+                            EndDate = new DateTime(2023, 3, 26, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 86,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 17
+                        },
+                        new
+                        {
+                            Id = 14,
+                            EndDate = new DateTime(2023, 4, 11, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 91,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 24
+                        },
+                        new
+                        {
+                            Id = 15,
+                            EndDate = new DateTime(2023, 3, 29, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 96,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 23
+                        },
+                        new
+                        {
+                            Id = 16,
+                            EndDate = new DateTime(2023, 3, 31, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 106,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 23
+                        },
+                        new
+                        {
+                            Id = 17,
+                            EndDate = new DateTime(2023, 3, 23, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 120,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 18
+                        },
+                        new
+                        {
+                            Id = 18,
+                            EndDate = new DateTime(2023, 3, 27, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 121,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 17
+                        },
+                        new
+                        {
+                            Id = 19,
+                            EndDate = new DateTime(2023, 3, 21, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 153,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 20
+                        },
+                        new
+                        {
+                            Id = 20,
+                            EndDate = new DateTime(2023, 4, 10, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 168,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 21
+                        },
+                        new
+                        {
+                            Id = 21,
+                            EndDate = new DateTime(2023, 3, 31, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 175,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 15
+                        },
+                        new
+                        {
+                            Id = 22,
+                            EndDate = new DateTime(2023, 4, 5, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 193,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 18
+                        },
+                        new
+                        {
+                            Id = 23,
+                            EndDate = new DateTime(2023, 4, 3, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 197,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 10
+                        },
+                        new
+                        {
+                            Id = 24,
+                            EndDate = new DateTime(2023, 3, 26, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            ProductPriceId = 236,
+                            StartDate = new DateTime(2023, 3, 13, 0, 37, 14, 313, DateTimeKind.Local).AddTicks(790),
+                            Value = 12
                         });
                 });
 
@@ -668,18 +660,18 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageSource")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
 
@@ -827,17 +819,17 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(70)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(60)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -857,49 +849,49 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 1,
                             Email = "admin@email.com",
-                            Password = "$2a$11$6//kuIeDaFgQN1/Kqu6LleHY9xntscbZS8tz2DsR4ENAWArT3UpK2",
+                            Password = "$2a$11$6I5bYESn6vMK0XdfAJK6tuOUDjIzspjGeFfHo3CFXyvP3nVB7vf3K",
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
                             Email = "user1@email.com",
-                            Password = "$2a$11$N9iNePIsptgaY7e2NnU1ceMdbe0qBvAwg9R4PnS8KvzcF/iwJl3fW",
+                            Password = "$2a$11$0hmFMPV6kEte.WppdQ/UGegpaRvUWrs.WmCWTuqDoS6ivsB2myc0u",
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
                             Email = "user2@email.com",
-                            Password = "$2a$11$68Zf5vVTJigFSvkVowpdtugofxjveQq20kWo2U.WxCxVOt/7yyydq",
+                            Password = "$2a$11$4BigXG3bg1r9LJS9x1couOxIB97bEB43enH8GDsAwxl.txZYHRJXm",
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
                             Email = "user3@email.com",
-                            Password = "$2a$11$DNs4dBFCIHZnsi3pihZu7ef6bcm4yUtzpVSkWam9Birb/ZedXvyDe",
+                            Password = "$2a$11$iStVedBjnofl449rCWoTle7ugFfiUEhwXdflWZTwliBcZlKc5hVJa",
                             UserId = 4
                         },
                         new
                         {
                             Id = 5,
                             Email = "user4@email.com",
-                            Password = "$2a$11$DgDv7ds/k.qCx3zsUW0INeLC.NsfMsdIRDrjI4oYHwyBiPT0r2jFS",
+                            Password = "$2a$11$ZYF3RfrBwjszubyDI7/65.pMUkHt8J2M.wC9GHYQAp3WXbXAi0EFG",
                             UserId = 5
                         },
                         new
                         {
                             Id = 6,
                             Email = "user5@email.com",
-                            Password = "$2a$11$HgWi6Ccl/UChTGyLWY59VetQBtlR0G5wpm7QbhiggunuFznHFrME2",
+                            Password = "$2a$11$ZnOjaT/BCINP8hG5ouqH9uvwqeGq93SV521lVK26oeYV0EdcwPDp.",
                             UserId = 6
                         },
                         new
                         {
                             Id = 7,
                             Email = "user6@email.com",
-                            Password = "$2a$11$ThlNfcRr/1E8SnHrV42eB.AF.EwD9ZCUK1HJrDQhth/yHlZ.EUcwG",
+                            Password = "$2a$11$UyXkUCm3zWWs/8Yt7uBlqeBp5HTpIvnRzkE2.NtwzWukbJtyYvmme",
                             UserId = 7
                         });
                 });
@@ -910,26 +902,26 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Comment")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("date");
 
                     b.Property<bool>("IsPaid")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bool");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("date");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("money");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<string>("Status")
-                        .HasColumnType("varchar(25)");
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -947,31 +939,31 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BirdSize")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageSource")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Manufacturer")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("NutritionType")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -987,27 +979,27 @@ namespace Birdy.Server.Migrations
                             CategoryId = 1,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
                             ImageSource = "/images/catalog/carriers/vitakraft.jpg",
-                            Manufacturer = "Malinki",
+                            Manufacturer = "Travellor",
                             Name = "Переноска для птиц 1"
                         },
                         new
                         {
                             Id = 2,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
-                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
+                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
                             Manufacturer = "Vitakraft",
                             Name = "Переноска для птиц 2"
                         },
                         new
                         {
                             Id = 3,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
-                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
-                            Manufacturer = "Vitakraft",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
+                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
+                            Manufacturer = "Malinki",
                             Name = "Переноска для птиц 3"
                         },
                         new
@@ -1017,47 +1009,47 @@ namespace Birdy.Server.Migrations
                             CategoryId = 1,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
                             ImageSource = "/images/catalog/carriers/vitakraft.jpg",
-                            Manufacturer = "Travellor",
+                            Manufacturer = "Malinki",
                             Name = "Переноска для птиц 4"
                         },
                         new
                         {
                             Id = 5,
-                            BirdSize = "Маленький",
+                            BirdSize = "Средний",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/carriers/malinki.jpg",
-                            Manufacturer = "Vitakraft",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
+                            Manufacturer = "Malinki",
                             Name = "Переноска для птиц 5"
                         },
                         new
                         {
                             Id = 6,
-                            BirdSize = "Крупный",
+                            BirdSize = "Средний",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
-                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
                             Manufacturer = "Travellor",
                             Name = "Переноска для птиц 6"
                         },
                         new
                         {
                             Id = 7,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/carriers/malinki.jpg",
-                            Manufacturer = "Malinki",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
+                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
+                            Manufacturer = "Travellor",
                             Name = "Переноска для птиц 7"
                         },
                         new
                         {
                             Id = 8,
-                            BirdSize = "Маленький",
+                            BirdSize = "Средний",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/carriers/malinki.jpg",
-                            Manufacturer = "Travellor",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
+                            Manufacturer = "Vitakraft",
                             Name = "Переноска для птиц 8"
                         },
                         new
@@ -1067,47 +1059,47 @@ namespace Birdy.Server.Migrations
                             CategoryId = 1,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
                             ImageSource = "/images/catalog/carriers/travellor.jpeg",
-                            Manufacturer = "Malinki",
+                            Manufacturer = "Travellor",
                             Name = "Переноска для птиц 9"
                         },
                         new
                         {
                             Id = 10,
-                            BirdSize = "Маленький",
+                            BirdSize = "Средний",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/carriers/malinki.jpg",
-                            Manufacturer = "Vitakraft",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
+                            Manufacturer = "Malinki",
                             Name = "Переноска для птиц 10"
                         },
                         new
                         {
                             Id = 11,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/carriers/malinki.jpg",
-                            Manufacturer = "Travellor",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
+                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
+                            Manufacturer = "Vitakraft",
                             Name = "Переноска для птиц 11"
                         },
                         new
                         {
                             Id = 12,
-                            BirdSize = "Крупный",
+                            BirdSize = "Маленький",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
-                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
-                            Manufacturer = "Travellor",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/carriers/malinki.jpg",
+                            Manufacturer = "Vitakraft",
                             Name = "Переноска для птиц 12"
                         },
                         new
                         {
                             Id = 13,
-                            BirdSize = "Крупный",
+                            BirdSize = "Маленький",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
-                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
-                            Manufacturer = "Travellor",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/carriers/malinki.jpg",
+                            Manufacturer = "Vitakraft",
                             Name = "Переноска для птиц 13"
                         },
                         new
@@ -1117,7 +1109,7 @@ namespace Birdy.Server.Migrations
                             CategoryId = 1,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
                             ImageSource = "/images/catalog/carriers/travellor.jpeg",
-                            Manufacturer = "Malinki",
+                            Manufacturer = "Travellor",
                             Name = "Переноска для птиц 14"
                         },
                         new
@@ -1133,11 +1125,11 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 16,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
-                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
-                            Manufacturer = "Travellor",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
+                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
+                            Manufacturer = "Malinki",
                             Name = "Переноска для птиц 16"
                         },
                         new
@@ -1153,53 +1145,53 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 18,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
-                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/carriers/malinki.jpg",
                             Manufacturer = "Vitakraft",
                             Name = "Переноска для птиц 18"
                         },
                         new
                         {
                             Id = 19,
-                            BirdSize = "Крупный",
+                            BirdSize = "Маленький",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
-                            ImageSource = "/images/catalog/carriers/vitakraft.jpg",
-                            Manufacturer = "Vitakraft",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/carriers/malinki.jpg",
+                            Manufacturer = "Travellor",
                             Name = "Переноска для птиц 19"
                         },
                         new
                         {
                             Id = 20,
-                            BirdSize = "Маленький",
+                            BirdSize = "Средний",
                             CategoryId = 1,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/carriers/malinki.jpg",
-                            Manufacturer = "Vitakraft",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/carriers/travellor.jpeg",
+                            Manufacturer = "Travellor",
                             Name = "Переноска для птиц 20"
                         },
                         new
                         {
                             Id = 21,
-                            BirdSize = "Крупный",
-                            CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
-                            ImageSource = "/images/catalog/food/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Корм для крупных птиц №1",
-                            NutritionType = "Плотоядные"
-                        },
-                        new
-                        {
-                            Id = 22,
                             BirdSize = "Маленький",
                             CategoryId = 2,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
                             ImageSource = "/images/catalog/food/fiory.jpg",
                             Manufacturer = "Fiory",
-                            Name = "Корм для маленьких птиц №2",
+                            Name = "Корм для маленьких птиц №1",
+                            NutritionType = "Плотоядные"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            BirdSize = "Средний",
+                            CategoryId = 2,
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/food/padovan.jpg",
+                            Manufacturer = "Padovan",
+                            Name = "Корм для средних птиц №2",
                             NutritionType = "Всеядные"
                         },
                         new
@@ -1227,12 +1219,12 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 25,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
-                            ImageSource = "/images/catalog/food/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Корм для средних птиц №5",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/food/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Корм для маленьких птиц №5",
                             NutritionType = "Плотоядные"
                         },
                         new
@@ -1241,8 +1233,8 @@ namespace Birdy.Server.Migrations
                             BirdSize = "Маленький",
                             CategoryId = 2,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/food/fiory.jpg",
-                            Manufacturer = "Fiory",
+                            ImageSource = "/images/catalog/food/prestige.jpeg",
+                            Manufacturer = "Prestige",
                             Name = "Корм для маленьких птиц №6",
                             NutritionType = "Всеядные"
                         },
@@ -1260,23 +1252,23 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 28,
-                            BirdSize = "Средний",
-                            CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
-                            ImageSource = "/images/catalog/food/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Корм для средних птиц №8",
-                            NutritionType = "Насекомоядные"
-                        },
-                        new
-                        {
-                            Id = 29,
                             BirdSize = "Крупный",
                             CategoryId = 2,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
                             ImageSource = "/images/catalog/food/rio.jpg",
                             Manufacturer = "Rio",
-                            Name = "Корм для крупных птиц №9",
+                            Name = "Корм для крупных птиц №8",
+                            NutritionType = "Насекомоядные"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            BirdSize = "Средний",
+                            CategoryId = 2,
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/food/padovan.jpg",
+                            Manufacturer = "Padovan",
+                            Name = "Корм для средних птиц №9",
                             NutritionType = "Плотоядные"
                         },
                         new
@@ -1293,111 +1285,111 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 31,
-                            BirdSize = "Маленький",
+                            BirdSize = "Средний",
                             CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/food/fiory.jpg",
-                            Manufacturer = "Fiory",
-                            Name = "Корм для маленьких птиц №11",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
+                            ImageSource = "/images/catalog/food/padovan.jpg",
+                            Manufacturer = "Padovan",
+                            Name = "Корм для средних птиц №11",
                             NutritionType = "Растительноядные"
                         },
                         new
                         {
                             Id = 32,
-                            BirdSize = "Крупный",
+                            BirdSize = "Маленький",
                             CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
-                            ImageSource = "/images/catalog/food/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Корм для крупных птиц №12",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/food/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Корм для маленьких птиц №12",
                             NutritionType = "Насекомоядные"
                         },
                         new
                         {
                             Id = 33,
-                            BirdSize = "Крупный",
+                            BirdSize = "Маленький",
                             CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
-                            ImageSource = "/images/catalog/food/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Корм для крупных птиц №13",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/food/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Корм для маленьких птиц №13",
                             NutritionType = "Плотоядные"
                         },
                         new
                         {
                             Id = 34,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
-                            ImageSource = "/images/catalog/food/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Корм для средних птиц №14",
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/food/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Корм для маленьких птиц №14",
                             NutritionType = "Всеядные"
                         },
                         new
                         {
                             Id = 35,
-                            BirdSize = "Маленький",
-                            CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/food/prestige.jpeg",
-                            Manufacturer = "Prestige",
-                            Name = "Корм для маленьких птиц №15",
-                            NutritionType = "Растительноядные"
-                        },
-                        new
-                        {
-                            Id = 36,
                             BirdSize = "Крупный",
                             CategoryId = 2,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
                             ImageSource = "/images/catalog/food/rio.jpg",
                             Manufacturer = "Rio",
-                            Name = "Корм для крупных птиц №16",
+                            Name = "Корм для крупных птиц №15",
+                            NutritionType = "Растительноядные"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            BirdSize = "Маленький",
+                            CategoryId = 2,
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/food/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Корм для маленьких птиц №16",
                             NutritionType = "Насекомоядные"
                         },
                         new
                         {
                             Id = 37,
-                            BirdSize = "Маленький",
-                            CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/food/fiory.jpg",
-                            Manufacturer = "Fiory",
-                            Name = "Корм для маленьких птиц №17",
-                            NutritionType = "Плотоядные"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            BirdSize = "Маленький",
-                            CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/food/prestige.jpeg",
-                            Manufacturer = "Prestige",
-                            Name = "Корм для маленьких птиц №18",
-                            NutritionType = "Всеядные"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            BirdSize = "Маленький",
-                            CategoryId = 2,
-                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
-                            ImageSource = "/images/catalog/food/fiory.jpg",
-                            Manufacturer = "Fiory",
-                            Name = "Корм для маленьких птиц №19",
-                            NutritionType = "Растительноядные"
-                        },
-                        new
-                        {
-                            Id = 40,
                             BirdSize = "Средний",
                             CategoryId = 2,
                             Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Средний",
                             ImageSource = "/images/catalog/food/padovan.jpg",
                             Manufacturer = "Padovan",
-                            Name = "Корм для средних птиц №20",
+                            Name = "Корм для средних птиц №17",
+                            NutritionType = "Плотоядные"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            BirdSize = "Крупный",
+                            CategoryId = 2,
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
+                            ImageSource = "/images/catalog/food/rio.jpg",
+                            Manufacturer = "Rio",
+                            Name = "Корм для крупных птиц №18",
+                            NutritionType = "Всеядные"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            BirdSize = "Крупный",
+                            CategoryId = 2,
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Крупный",
+                            ImageSource = "/images/catalog/food/rio.jpg",
+                            Manufacturer = "Rio",
+                            Name = "Корм для крупных птиц №19",
+                            NutritionType = "Растительноядные"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            BirdSize = "Маленький",
+                            CategoryId = 2,
+                            Description = "Изделие, предназначенное для переноски или перевозки птиц из магазина домой, а также из дома в ветеринарную клинику. Размер птицы: Маленький",
+                            ImageSource = "/images/catalog/food/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Корм для маленьких птиц №20",
                             NutritionType = "Насекомоядные"
                         },
                         new
@@ -1423,9 +1415,9 @@ namespace Birdy.Server.Migrations
                             Id = 43,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/doradowood.jpg",
-                            Manufacturer = "DoradoWood",
-                            Name = "Кормушка DoradoWood для птиц уличная  №3"
+                            ImageSource = "/images/catalog/feeders/darell.jpg",
+                            Manufacturer = "Darell",
+                            Name = "Кормушка Darell для птиц уличная  №3"
                         },
                         new
                         {
@@ -1441,27 +1433,27 @@ namespace Birdy.Server.Migrations
                             Id = 45,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Кормушка Trixie для птиц уличная  №5"
+                            ImageSource = "/images/catalog/feeders/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Кормушка DoradoWood для птиц уличная  №5"
                         },
                         new
                         {
                             Id = 46,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Кормушка Trixie для птиц уличная  №6"
+                            ImageSource = "/images/catalog/feeders/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Кормушка DoradoWood для птиц уличная  №6"
                         },
                         new
                         {
                             Id = 47,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/darell.jpg",
-                            Manufacturer = "Darell",
-                            Name = "Кормушка Darell для птиц уличная  №7"
+                            ImageSource = "/images/catalog/feeders/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Кормушка Trixie для птиц уличная  №7"
                         },
                         new
                         {
@@ -1477,9 +1469,9 @@ namespace Birdy.Server.Migrations
                             Id = 49,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/darell.jpg",
-                            Manufacturer = "Darell",
-                            Name = "Кормушка Darell для птиц уличная  №9"
+                            ImageSource = "/images/catalog/feeders/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Кормушка DoradoWood для птиц уличная  №9"
                         },
                         new
                         {
@@ -1504,9 +1496,9 @@ namespace Birdy.Server.Migrations
                             Id = 52,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Кормушка Trixie для птиц уличная  №12"
+                            ImageSource = "/images/catalog/feeders/darell.jpg",
+                            Manufacturer = "Darell",
+                            Name = "Кормушка Darell для птиц уличная  №12"
                         },
                         new
                         {
@@ -1522,27 +1514,27 @@ namespace Birdy.Server.Migrations
                             Id = 54,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Кормушка Trixie для птиц уличная  №14"
+                            ImageSource = "/images/catalog/feeders/darell.jpg",
+                            Manufacturer = "Darell",
+                            Name = "Кормушка Darell для птиц уличная  №14"
                         },
                         new
                         {
                             Id = 55,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/doradowood.jpg",
-                            Manufacturer = "DoradoWood",
-                            Name = "Кормушка DoradoWood для птиц уличная  №15"
+                            ImageSource = "/images/catalog/feeders/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Кормушка Trixie для птиц уличная  №15"
                         },
                         new
                         {
                             Id = 56,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/darell.jpg",
-                            Manufacturer = "Darell",
-                            Name = "Кормушка Darell для птиц уличная  №16"
+                            ImageSource = "/images/catalog/feeders/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Кормушка DoradoWood для птиц уличная  №16"
                         },
                         new
                         {
@@ -1558,47 +1550,47 @@ namespace Birdy.Server.Migrations
                             Id = 58,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Кормушка Trixie для птиц уличная  №18"
+                            ImageSource = "/images/catalog/feeders/darell.jpg",
+                            Manufacturer = "Darell",
+                            Name = "Кормушка Darell для птиц уличная  №18"
                         },
                         new
                         {
                             Id = 59,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/darell.jpg",
-                            Manufacturer = "Darell",
-                            Name = "Кормушка Darell для птиц уличная  №19"
+                            ImageSource = "/images/catalog/feeders/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Кормушка Trixie для птиц уличная  №19"
                         },
                         new
                         {
                             Id = 60,
                             CategoryId = 3,
                             Description = "Зима – трудное время для птиц. Нашим маленьким пернатым друзьям часто приходится бороться за выживание. Наши кормушки – это не только птичья столовая, но и украшение сада или балкона. Цветовые решения наших кормушек приближенны к естественным, поэтому птицы станут частыми гостями \"застолья\"!",
-                            ImageSource = "/images/catalog/feeders/doradowood.jpg",
-                            Manufacturer = "DoradoWood",
-                            Name = "Кормушка DoradoWood для птиц уличная  №20"
+                            ImageSource = "/images/catalog/feeders/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Кормушка Trixie для птиц уличная  №20"
                         },
                         new
                         {
                             Id = 61,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
-                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
-                            Manufacturer = "Vitakraft",
-                            Name = "Лакомство Vitakraft для птиц  №1"
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Крупный",
+                            ImageSource = "/images/catalog/goodies/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Лакомство Triol для птиц  №1"
                         },
                         new
                         {
                             Id = 62,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
-                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
-                            Manufacturer = "Vitakraft",
-                            Name = "Лакомство Vitakraft для птиц  №2"
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Крупный",
+                            ImageSource = "/images/catalog/goodies/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Лакомство Triol для птиц  №2"
                         },
                         new
                         {
@@ -1613,52 +1605,52 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 64,
-                            BirdSize = "Маленький",
-                            CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
-                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
-                            Manufacturer = "Vitakraft",
-                            Name = "Лакомство Vitakraft для птиц  №4"
-                        },
-                        new
-                        {
-                            Id = 65,
                             BirdSize = "Крупный",
                             CategoryId = 4,
                             Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Крупный",
                             ImageSource = "/images/catalog/goodies/triol.jpg",
                             Manufacturer = "Triol",
-                            Name = "Лакомство Triol для птиц  №5"
+                            Name = "Лакомство Triol для птиц  №4"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            BirdSize = "Маленький",
+                            CategoryId = 4,
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
+                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
+                            Manufacturer = "Vitakraft",
+                            Name = "Лакомство Vitakraft для птиц  №5"
                         },
                         new
                         {
                             Id = 66,
+                            BirdSize = "Маленький",
+                            CategoryId = 4,
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
+                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
+                            Manufacturer = "Vitakraft",
+                            Name = "Лакомство Vitakraft для птиц  №6"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            BirdSize = "Маленький",
+                            CategoryId = 4,
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
+                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
+                            Manufacturer = "Vitakraft",
+                            Name = "Лакомство Vitakraft для птиц  №7"
+                        },
+                        new
+                        {
+                            Id = 68,
                             BirdSize = "Средний",
                             CategoryId = 4,
                             Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Средний",
                             ImageSource = "/images/catalog/goodies/rio.jpg",
                             Manufacturer = "Rio",
-                            Name = "Лакомство Rio для птиц  №6"
-                        },
-                        new
-                        {
-                            Id = 67,
-                            BirdSize = "Крупный",
-                            CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Крупный",
-                            ImageSource = "/images/catalog/goodies/triol.jpg",
-                            Manufacturer = "Triol",
-                            Name = "Лакомство Triol для птиц  №7"
-                        },
-                        new
-                        {
-                            Id = 68,
-                            BirdSize = "Маленький",
-                            CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
-                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
-                            Manufacturer = "Vitakraft",
-                            Name = "Лакомство Vitakraft для птиц  №8"
+                            Name = "Лакомство Rio для птиц  №8"
                         },
                         new
                         {
@@ -1673,42 +1665,42 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 70,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Средний",
-                            ImageSource = "/images/catalog/goodies/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Лакомство Rio для птиц  №10"
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
+                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
+                            Manufacturer = "Vitakraft",
+                            Name = "Лакомство Vitakraft для птиц  №10"
                         },
                         new
                         {
                             Id = 71,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Средний",
-                            ImageSource = "/images/catalog/goodies/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Лакомство Rio для птиц  №11"
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
+                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
+                            Manufacturer = "Vitakraft",
+                            Name = "Лакомство Vitakraft для птиц  №11"
                         },
                         new
                         {
                             Id = 72,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Средний",
-                            ImageSource = "/images/catalog/goodies/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Лакомство Rio для птиц  №12"
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
+                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
+                            Manufacturer = "Vitakraft",
+                            Name = "Лакомство Vitakraft для птиц  №12"
                         },
                         new
                         {
                             Id = 73,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Средний",
-                            ImageSource = "/images/catalog/goodies/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Лакомство Rio для птиц  №13"
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
+                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
+                            Manufacturer = "Vitakraft",
+                            Name = "Лакомство Vitakraft для птиц  №13"
                         },
                         new
                         {
@@ -1733,32 +1725,32 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 76,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Средний",
-                            ImageSource = "/images/catalog/goodies/rio.jpg",
-                            Manufacturer = "Rio",
-                            Name = "Лакомство Rio для птиц  №16"
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Крупный",
+                            ImageSource = "/images/catalog/goodies/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Лакомство Triol для птиц  №16"
                         },
                         new
                         {
                             Id = 77,
+                            BirdSize = "Крупный",
+                            CategoryId = 4,
+                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Крупный",
+                            ImageSource = "/images/catalog/goodies/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Лакомство Triol для птиц  №17"
+                        },
+                        new
+                        {
+                            Id = 78,
                             BirdSize = "Средний",
                             CategoryId = 4,
                             Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Средний",
                             ImageSource = "/images/catalog/goodies/rio.jpg",
                             Manufacturer = "Rio",
-                            Name = "Лакомство Rio для птиц  №17"
-                        },
-                        new
-                        {
-                            Id = 78,
-                            BirdSize = "Маленький",
-                            CategoryId = 4,
-                            Description = "Полезное и функциональное лакомство содержит любимые пернатыми зерна и семена, сбалансировано по микро- и макроэлементам и обогащено витаминами, необходимыми для правильного развития пернатых питомцев. Размер птиц: Маленький",
-                            ImageSource = "/images/catalog/goodies/vitakraft.jpeg",
-                            Manufacturer = "Vitakraft",
-                            Name = "Лакомство Vitakraft для птиц  №18"
+                            Name = "Лакомство Rio для птиц  №18"
                         },
                         new
                         {
@@ -1793,19 +1785,19 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 82,
                             CategoryId = 5,
-                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
-                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
-                            Manufacturer = "Beaphar",
-                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №2"
+                            Description = "Капли против паразитов, для птиц, 50мл.",
+                            ImageSource = "/images/catalog/careproducts/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Капли против паразитов BAKA №2"
                         },
                         new
                         {
                             Id = 83,
                             CategoryId = 5,
-                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
-                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
-                            Manufacturer = "Doctor Animal",
-                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №3"
+                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
+                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
+                            Manufacturer = "Beaphar",
+                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №3"
                         },
                         new
                         {
@@ -1820,55 +1812,55 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 85,
                             CategoryId = 5,
-                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
-                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
-                            Manufacturer = "Beaphar",
-                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №5"
+                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
+                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
+                            Manufacturer = "Doctor Animal",
+                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №5"
                         },
                         new
                         {
                             Id = 86,
                             CategoryId = 5,
-                            Description = "Капли против паразитов, для птиц, 50мл.",
-                            ImageSource = "/images/catalog/careproducts/baka.jpg",
-                            Manufacturer = "BAKA",
-                            Name = "Капли против паразитов BAKA №6"
+                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
+                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
+                            Manufacturer = "Doctor Animal",
+                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №6"
                         },
                         new
                         {
                             Id = 87,
                             CategoryId = 5,
-                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
-                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
-                            Manufacturer = "Beaphar",
-                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №7"
+                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
+                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
+                            Manufacturer = "Doctor Animal",
+                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №7"
                         },
                         new
                         {
                             Id = 88,
                             CategoryId = 5,
-                            Description = "Капли против паразитов, для птиц, 50мл.",
-                            ImageSource = "/images/catalog/careproducts/baka.jpg",
-                            Manufacturer = "BAKA",
-                            Name = "Капли против паразитов BAKA №8"
+                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
+                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
+                            Manufacturer = "Beaphar",
+                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №8"
                         },
                         new
                         {
                             Id = 89,
                             CategoryId = 5,
-                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
-                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
-                            Manufacturer = "Beaphar",
-                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №9"
+                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
+                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
+                            Manufacturer = "Doctor Animal",
+                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №9"
                         },
                         new
                         {
                             Id = 90,
                             CategoryId = 5,
-                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
-                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
-                            Manufacturer = "Beaphar",
-                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №10"
+                            Description = "Капли против паразитов, для птиц, 50мл.",
+                            ImageSource = "/images/catalog/careproducts/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Капли против паразитов BAKA №10"
                         },
                         new
                         {
@@ -1901,10 +1893,10 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 94,
                             CategoryId = 5,
-                            Description = "Капли против паразитов, для птиц, 50мл.",
-                            ImageSource = "/images/catalog/careproducts/baka.jpg",
-                            Manufacturer = "BAKA",
-                            Name = "Капли против паразитов BAKA №14"
+                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
+                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
+                            Manufacturer = "Beaphar",
+                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №14"
                         },
                         new
                         {
@@ -1919,10 +1911,10 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 96,
                             CategoryId = 5,
-                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
-                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
-                            Manufacturer = "Doctor Animal",
-                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №16"
+                            Description = "Капли против паразитов, для птиц, 50мл.",
+                            ImageSource = "/images/catalog/careproducts/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Капли против паразитов BAKA №16"
                         },
                         new
                         {
@@ -1946,49 +1938,49 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 99,
                             CategoryId = 5,
-                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
-                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
-                            Manufacturer = "Doctor Animal",
-                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №19"
+                            Description = "Капли против паразитов, для птиц, 50мл.",
+                            ImageSource = "/images/catalog/careproducts/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Капли против паразитов BAKA №19"
                         },
                         new
                         {
                             Id = 100,
                             CategoryId = 5,
-                            Description = "Спрей представляет собой бесцветную жидкость под давлением (аэрозоль) с запахом чеснока. Против выдергивания перьев у попугаев, в том числе длиннохвостых, и других тропических и певчих птиц при стрессе, пищеварительных расстройствах и прочих нарушениях поведения.",
-                            ImageSource = "/images/catalog/careproducts/beaphar.jpg",
-                            Manufacturer = "Beaphar",
-                            Name = "Спрей для птиц Beaphar Papick Spray против выдёргивания перьев №20"
+                            Description = "Спрей на основе безвредных компонентов для человека и птицы. Спрей деликатно очищает, смягчает, питает, успокаивает и оздоравливает перья и кожу птицы. Регулярное применение усиливает яркость оперения, помогает восстановить естественный защитный барьер, облегчает период линьки, предотвращает чрезмерную линьку и поддерживает птицу в нормальном физиологическом состоянии.",
+                            ImageSource = "/images/catalog/careproducts/doctoranimal.jpg",
+                            Manufacturer = "Doctor Animal",
+                            Name = "Спрей \"Doctor Animal\" для ухода за оперением птиц №20"
                         },
                         new
                         {
                             Id = 101,
-                            BirdSize = "Средний",
-                            CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №1"
-                        },
-                        new
-                        {
-                            Id = 102,
-                            BirdSize = "Крупный",
-                            CategoryId = 6,
-                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
-                            ImageSource = "/images/catalog/cells/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Клетка для птиц Ferplast №2"
-                        },
-                        new
-                        {
-                            Id = 103,
                             BirdSize = "Маленький",
                             CategoryId = 6,
                             Description = "Клетка для птиц Vision станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Маленький.",
                             ImageSource = "/images/catalog/cells/vision.jpg",
                             Manufacturer = "Vision",
-                            Name = "Клетка для птиц Vision №3"
+                            Name = "Клетка для птиц Vision №1"
+                        },
+                        new
+                        {
+                            Id = 102,
+                            BirdSize = "Средний",
+                            CategoryId = 6,
+                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
+                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
+                            Manufacturer = "Sky Rainforest",
+                            Name = "Клетка для птиц Sky Rainforest №2"
+                        },
+                        new
+                        {
+                            Id = 103,
+                            BirdSize = "Крупный",
+                            CategoryId = 6,
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №3"
                         },
                         new
                         {
@@ -2003,12 +1995,12 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 105,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 6,
-                            Description = "Клетка для птиц Vision станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Маленький.",
-                            ImageSource = "/images/catalog/cells/vision.jpg",
-                            Manufacturer = "Vision",
-                            Name = "Клетка для птиц Vision №5"
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №5"
                         },
                         new
                         {
@@ -2023,12 +2015,12 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 107,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №7"
+                            Description = "Клетка для птиц Vision станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Маленький.",
+                            ImageSource = "/images/catalog/cells/vision.jpg",
+                            Manufacturer = "Vision",
+                            Name = "Клетка для птиц Vision №7"
                         },
                         new
                         {
@@ -2043,72 +2035,72 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 109,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №9"
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №9"
                         },
                         new
                         {
                             Id = 110,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №10"
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №10"
                         },
                         new
                         {
                             Id = 111,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №11"
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №11"
                         },
                         new
                         {
                             Id = 112,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №12"
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №12"
                         },
                         new
                         {
                             Id = 113,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 6,
-                            Description = "Клетка для птиц Vision станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Маленький.",
-                            ImageSource = "/images/catalog/cells/vision.jpg",
-                            Manufacturer = "Vision",
-                            Name = "Клетка для птиц Vision №13"
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №13"
                         },
                         new
                         {
                             Id = 114,
-                            BirdSize = "Средний",
-                            CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №14"
-                        },
-                        new
-                        {
-                            Id = 115,
                             BirdSize = "Маленький",
                             CategoryId = 6,
                             Description = "Клетка для птиц Vision станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Маленький.",
                             ImageSource = "/images/catalog/cells/vision.jpg",
                             Manufacturer = "Vision",
-                            Name = "Клетка для птиц Vision №15"
+                            Name = "Клетка для птиц Vision №14"
+                        },
+                        new
+                        {
+                            Id = 115,
+                            BirdSize = "Крупный",
+                            CategoryId = 6,
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №15"
                         },
                         new
                         {
@@ -2133,72 +2125,72 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 118,
-                            BirdSize = "Средний",
-                            CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №18"
-                        },
-                        new
-                        {
-                            Id = 119,
-                            BirdSize = "Средний",
-                            CategoryId = 6,
-                            Description = "Клетка для птиц Sky Rainforest станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Средний и менее.",
-                            ImageSource = "/images/catalog/cells/skyrainforest.jpg",
-                            Manufacturer = "Sky Rainforest",
-                            Name = "Клетка для птиц Sky Rainforest №19"
-                        },
-                        new
-                        {
-                            Id = 120,
                             BirdSize = "Маленький",
                             CategoryId = 6,
                             Description = "Клетка для птиц Vision станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Маленький.",
                             ImageSource = "/images/catalog/cells/vision.jpg",
                             Manufacturer = "Vision",
-                            Name = "Клетка для птиц Vision №20"
+                            Name = "Клетка для птиц Vision №18"
+                        },
+                        new
+                        {
+                            Id = 119,
+                            BirdSize = "Маленький",
+                            CategoryId = 6,
+                            Description = "Клетка для птиц Vision станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Маленький.",
+                            ImageSource = "/images/catalog/cells/vision.jpg",
+                            Manufacturer = "Vision",
+                            Name = "Клетка для птиц Vision №19"
+                        },
+                        new
+                        {
+                            Id = 120,
+                            BirdSize = "Крупный",
+                            CategoryId = 6,
+                            Description = "Клетка для птиц Ferplast станет великолепным домом для вашего пернатого. Просторное жилище придётся по нраву питомцу. Надёжная клетка выполнена из качественного материала, который не впитывает запах и влагу, легко моется и годами сохраняет свой внешний вид. Размер птиц: Крупный и менее.",
+                            ImageSource = "/images/catalog/cells/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Клетка для птиц Ferplast №20"
                         },
                         new
                         {
                             Id = 121,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
-                            ImageSource = "/images/catalog/toys/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №1"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
+                            ImageSource = "/images/catalog/toys/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Игрушка для птиц DoradoWood №1"
                         },
                         new
                         {
                             Id = 122,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
-                            ImageSource = "/images/catalog/toys/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №2"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
+                            ImageSource = "/images/catalog/toys/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Игрушка для птиц Triol №2"
                         },
                         new
                         {
                             Id = 123,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
-                            ImageSource = "/images/catalog/toys/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №3"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
+                            ImageSource = "/images/catalog/toys/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Игрушка для птиц Triol №3"
                         },
                         new
                         {
                             Id = 124,
-                            BirdSize = "Средний",
+                            BirdSize = "Крупный",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
-                            ImageSource = "/images/catalog/toys/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №4"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
+                            ImageSource = "/images/catalog/toys/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Игрушка для птиц DoradoWood №4"
                         },
                         new
                         {
@@ -2213,42 +2205,42 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 126,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
-                            ImageSource = "/images/catalog/toys/triol.jpg",
-                            Manufacturer = "Triol",
-                            Name = "Игрушка для птиц Triol №6"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
+                            ImageSource = "/images/catalog/toys/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Игрушка для птиц DoradoWood №6"
                         },
                         new
                         {
                             Id = 127,
+                            BirdSize = "Крупный",
+                            CategoryId = 7,
+                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
+                            ImageSource = "/images/catalog/toys/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Игрушка для птиц DoradoWood №7"
+                        },
+                        new
+                        {
+                            Id = 128,
                             BirdSize = "Средний",
                             CategoryId = 7,
                             Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
                             ImageSource = "/images/catalog/toys/ferplast.jpg",
                             Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №7"
-                        },
-                        new
-                        {
-                            Id = 128,
-                            BirdSize = "Крупный",
-                            CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
-                            ImageSource = "/images/catalog/toys/doradowood.jpg",
-                            Manufacturer = "DoradoWood",
-                            Name = "Игрушка для птиц DoradoWood №8"
+                            Name = "Игрушка для птиц Ferplast №8"
                         },
                         new
                         {
                             Id = 129,
-                            BirdSize = "Крупный",
+                            BirdSize = "Средний",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
-                            ImageSource = "/images/catalog/toys/doradowood.jpg",
-                            Manufacturer = "DoradoWood",
-                            Name = "Игрушка для птиц DoradoWood №9"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
+                            ImageSource = "/images/catalog/toys/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Игрушка для птиц Ferplast №9"
                         },
                         new
                         {
@@ -2263,12 +2255,12 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 131,
-                            BirdSize = "Маленький",
+                            BirdSize = "Средний",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
-                            ImageSource = "/images/catalog/toys/triol.jpg",
-                            Manufacturer = "Triol",
-                            Name = "Игрушка для птиц Triol №11"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
+                            ImageSource = "/images/catalog/toys/ferplast.jpg",
+                            Manufacturer = "Ferplast",
+                            Name = "Игрушка для птиц Ferplast №11"
                         },
                         new
                         {
@@ -2283,12 +2275,12 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 133,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
-                            ImageSource = "/images/catalog/toys/triol.jpg",
-                            Manufacturer = "Triol",
-                            Name = "Игрушка для птиц Triol №13"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
+                            ImageSource = "/images/catalog/toys/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Игрушка для птиц DoradoWood №13"
                         },
                         new
                         {
@@ -2303,12 +2295,12 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 135,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
-                            ImageSource = "/images/catalog/toys/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №15"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
+                            ImageSource = "/images/catalog/toys/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Игрушка для птиц Triol №15"
                         },
                         new
                         {
@@ -2323,42 +2315,42 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 137,
-                            BirdSize = "Средний",
+                            BirdSize = "Маленький",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
-                            ImageSource = "/images/catalog/toys/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №17"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
+                            ImageSource = "/images/catalog/toys/triol.jpg",
+                            Manufacturer = "Triol",
+                            Name = "Игрушка для птиц Triol №17"
                         },
                         new
                         {
                             Id = 138,
-                            BirdSize = "Маленький",
+                            BirdSize = "Крупный",
                             CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
-                            ImageSource = "/images/catalog/toys/triol.jpg",
-                            Manufacturer = "Triol",
-                            Name = "Игрушка для птиц Triol №18"
+                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
+                            ImageSource = "/images/catalog/toys/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Игрушка для птиц DoradoWood №18"
                         },
                         new
                         {
                             Id = 139,
-                            BirdSize = "Средний",
-                            CategoryId = 7,
-                            Description = "Забавная игрушка для птиц. Размер птиц: Средний.",
-                            ImageSource = "/images/catalog/toys/ferplast.jpg",
-                            Manufacturer = "Ferplast",
-                            Name = "Игрушка для птиц Ferplast №19"
-                        },
-                        new
-                        {
-                            Id = 140,
                             BirdSize = "Маленький",
                             CategoryId = 7,
                             Description = "Забавная игрушка для птиц. Размер птиц: Маленький.",
                             ImageSource = "/images/catalog/toys/triol.jpg",
                             Manufacturer = "Triol",
-                            Name = "Игрушка для птиц Triol №20"
+                            Name = "Игрушка для птиц Triol №19"
+                        },
+                        new
+                        {
+                            Id = 140,
+                            BirdSize = "Крупный",
+                            CategoryId = 7,
+                            Description = "Забавная игрушка для птиц. Размер птиц: Крупный.",
+                            ImageSource = "/images/catalog/toys/doradowood.jpg",
+                            Manufacturer = "DoradoWood",
+                            Name = "Игрушка для птиц DoradoWood №20"
                         },
                         new
                         {
@@ -2391,10 +2383,10 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 144,
                             CategoryId = 8,
-                            Description = "Padovan Natural Sand - это наполнитель для птичьих клеток. Очищенные от пыли гранулы кварца насыпаются на дно птичьей клетки для обеспечения лучшей гигиены и облегчения чистки дна.",
-                            ImageSource = "/images/catalog/fillers/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Наполнитель для дна птичьих клеток PADOVAN Natural Sand №4"
+                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
+                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
+                            Manufacturer = "Vitaline",
+                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №4"
                         },
                         new
                         {
@@ -2409,19 +2401,19 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 146,
                             CategoryId = 8,
-                            Description = "Песочные подстилки идеально подойдут для поддержания чистоты клетки вашей птички. Морской песок тщательно обработан и не содержит вредных бактерий и грязи, а приятный запах лимона наполняет пространство клетки свежестью.",
-                            ImageSource = "/images/catalog/fillers/fiory.jpg",
-                            Manufacturer = "Fiory",
-                            Name = "Песок для птиц Grit Mint Fiory №6"
+                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
+                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
+                            Manufacturer = "Vitaline",
+                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №6"
                         },
                         new
                         {
                             Id = 147,
                             CategoryId = 8,
-                            Description = "Padovan Natural Sand - это наполнитель для птичьих клеток. Очищенные от пыли гранулы кварца насыпаются на дно птичьей клетки для обеспечения лучшей гигиены и облегчения чистки дна.",
-                            ImageSource = "/images/catalog/fillers/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Наполнитель для дна птичьих клеток PADOVAN Natural Sand №7"
+                            Description = "Песочные подстилки идеально подойдут для поддержания чистоты клетки вашей птички. Морской песок тщательно обработан и не содержит вредных бактерий и грязи, а приятный запах лимона наполняет пространство клетки свежестью.",
+                            ImageSource = "/images/catalog/fillers/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Песок для птиц Grit Mint Fiory №7"
                         },
                         new
                         {
@@ -2445,46 +2437,46 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 150,
                             CategoryId = 8,
-                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
-                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
-                            Manufacturer = "Vitaline",
-                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №10"
+                            Description = "Песочные подстилки идеально подойдут для поддержания чистоты клетки вашей птички. Морской песок тщательно обработан и не содержит вредных бактерий и грязи, а приятный запах лимона наполняет пространство клетки свежестью.",
+                            ImageSource = "/images/catalog/fillers/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Песок для птиц Grit Mint Fiory №10"
                         },
                         new
                         {
                             Id = 151,
                             CategoryId = 8,
-                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
-                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
-                            Manufacturer = "Vitaline",
-                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №11"
+                            Description = "Padovan Natural Sand - это наполнитель для птичьих клеток. Очищенные от пыли гранулы кварца насыпаются на дно птичьей клетки для обеспечения лучшей гигиены и облегчения чистки дна.",
+                            ImageSource = "/images/catalog/fillers/padovan.jpg",
+                            Manufacturer = "Padovan",
+                            Name = "Наполнитель для дна птичьих клеток PADOVAN Natural Sand №11"
                         },
                         new
                         {
                             Id = 152,
                             CategoryId = 8,
-                            Description = "Песочные подстилки идеально подойдут для поддержания чистоты клетки вашей птички. Морской песок тщательно обработан и не содержит вредных бактерий и грязи, а приятный запах лимона наполняет пространство клетки свежестью.",
-                            ImageSource = "/images/catalog/fillers/fiory.jpg",
-                            Manufacturer = "Fiory",
-                            Name = "Песок для птиц Grit Mint Fiory №12"
+                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
+                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
+                            Manufacturer = "Vitaline",
+                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №12"
                         },
                         new
                         {
                             Id = 153,
                             CategoryId = 8,
-                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
-                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
-                            Manufacturer = "Vitaline",
-                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №13"
+                            Description = "Padovan Natural Sand - это наполнитель для птичьих клеток. Очищенные от пыли гранулы кварца насыпаются на дно птичьей клетки для обеспечения лучшей гигиены и облегчения чистки дна.",
+                            ImageSource = "/images/catalog/fillers/padovan.jpg",
+                            Manufacturer = "Padovan",
+                            Name = "Наполнитель для дна птичьих клеток PADOVAN Natural Sand №13"
                         },
                         new
                         {
                             Id = 154,
                             CategoryId = 8,
-                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
-                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
-                            Manufacturer = "Vitaline",
-                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №14"
+                            Description = "Песочные подстилки идеально подойдут для поддержания чистоты клетки вашей птички. Морской песок тщательно обработан и не содержит вредных бактерий и грязи, а приятный запах лимона наполняет пространство клетки свежестью.",
+                            ImageSource = "/images/catalog/fillers/fiory.jpg",
+                            Manufacturer = "Fiory",
+                            Name = "Песок для птиц Grit Mint Fiory №14"
                         },
                         new
                         {
@@ -2499,19 +2491,19 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 156,
                             CategoryId = 8,
-                            Description = "Padovan Natural Sand - это наполнитель для птичьих клеток. Очищенные от пыли гранулы кварца насыпаются на дно птичьей клетки для обеспечения лучшей гигиены и облегчения чистки дна.",
-                            ImageSource = "/images/catalog/fillers/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Наполнитель для дна птичьих клеток PADOVAN Natural Sand №16"
+                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
+                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
+                            Manufacturer = "Vitaline",
+                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №16"
                         },
                         new
                         {
                             Id = 157,
                             CategoryId = 8,
-                            Description = "Padovan Natural Sand - это наполнитель для птичьих клеток. Очищенные от пыли гранулы кварца насыпаются на дно птичьей клетки для обеспечения лучшей гигиены и облегчения чистки дна.",
-                            ImageSource = "/images/catalog/fillers/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Наполнитель для дна птичьих клеток PADOVAN Natural Sand №17"
+                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
+                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
+                            Manufacturer = "Vitaline",
+                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №17"
                         },
                         new
                         {
@@ -2535,37 +2527,37 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 160,
                             CategoryId = 8,
-                            Description = "Padovan Natural Sand - это наполнитель для птичьих клеток. Очищенные от пыли гранулы кварца насыпаются на дно птичьей клетки для обеспечения лучшей гигиены и облегчения чистки дна.",
-                            ImageSource = "/images/catalog/fillers/padovan.jpg",
-                            Manufacturer = "Padovan",
-                            Name = "Наполнитель для дна птичьих клеток PADOVAN Natural Sand №20"
+                            Description = "Наполнитель Гипоаллергенный изготовлен на основе стружки лиственных пород древесины. Эти опилки изготавливаются из липы или березы на новейшем оборудовании.",
+                            ImageSource = "/images/catalog/fillers/vitaline.jpg",
+                            Manufacturer = "Vitaline",
+                            Name = "Опилки гипоаллергенные из лиственных пород древесины Vitaline №20"
                         },
                         new
                         {
                             Id = 161,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №1"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №1"
                         },
                         new
                         {
                             Id = 162,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №2"
+                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
+                            ImageSource = "/images/catalog/accessories/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Жердочки для клетки Trixie №2"
                         },
                         new
                         {
                             Id = 163,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №3"
+                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
+                            ImageSource = "/images/catalog/accessories/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Жердочки для клетки Trixie №3"
                         },
                         new
                         {
@@ -2580,28 +2572,28 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 165,
                             CategoryId = 9,
-                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
-                            ImageSource = "/images/catalog/accessories/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Жердочки для клетки Trixie №5"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №5"
                         },
                         new
                         {
                             Id = 166,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №6"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №6"
                         },
                         new
                         {
                             Id = 167,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №7"
+                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
+                            ImageSource = "/images/catalog/accessories/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Жердочки для клетки Trixie №7"
                         },
                         new
                         {
@@ -2616,109 +2608,109 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 169,
                             CategoryId = 9,
-                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
-                            ImageSource = "/images/catalog/accessories/baka.jpg",
-                            Manufacturer = "BAKA",
-                            Name = "Поилка для птиц ВАКА №9"
+                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
+                            ImageSource = "/images/catalog/accessories/crystal.jpg",
+                            Manufacturer = "Crystal",
+                            Name = "Качели Crystal №9"
                         },
                         new
                         {
                             Id = 170,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №10"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №10"
                         },
                         new
                         {
                             Id = 171,
                             CategoryId = 9,
-                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
-                            ImageSource = "/images/catalog/accessories/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Жердочки для клетки Trixie №11"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №11"
                         },
                         new
                         {
                             Id = 172,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №12"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №12"
                         },
                         new
                         {
                             Id = 173,
                             CategoryId = 9,
-                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
-                            ImageSource = "/images/catalog/accessories/baka.jpg",
-                            Manufacturer = "BAKA",
-                            Name = "Поилка для птиц ВАКА №13"
+                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
+                            ImageSource = "/images/catalog/accessories/crystal.jpg",
+                            Manufacturer = "Crystal",
+                            Name = "Качели Crystal №13"
                         },
                         new
                         {
                             Id = 174,
                             CategoryId = 9,
-                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
-                            ImageSource = "/images/catalog/accessories/trixie.jpg",
-                            Manufacturer = "Trixie",
-                            Name = "Жердочки для клетки Trixie №14"
+                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
+                            ImageSource = "/images/catalog/accessories/crystal.jpg",
+                            Manufacturer = "Crystal",
+                            Name = "Качели Crystal №14"
                         },
                         new
                         {
                             Id = 175,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №15"
+                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
+                            ImageSource = "/images/catalog/accessories/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Жердочки для клетки Trixie №15"
                         },
                         new
                         {
                             Id = 176,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №16"
+                            Description = "Деревянные жердочки для клетки с пластиковыми наконечниками. Две штуки длиной 45 см диаметром 10 мм, две штуки длиной 45 см диаметром 12 мм.",
+                            ImageSource = "/images/catalog/accessories/trixie.jpg",
+                            Manufacturer = "Trixie",
+                            Name = "Жердочки для клетки Trixie №16"
                         },
                         new
                         {
                             Id = 177,
                             CategoryId = 9,
-                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
-                            ImageSource = "/images/catalog/accessories/baka.jpg",
-                            Manufacturer = "BAKA",
-                            Name = "Поилка для птиц ВАКА №17"
+                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
+                            ImageSource = "/images/catalog/accessories/crystal.jpg",
+                            Manufacturer = "Crystal",
+                            Name = "Качели Crystal №17"
                         },
                         new
                         {
                             Id = 178,
                             CategoryId = 9,
-                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
-                            ImageSource = "/images/catalog/accessories/baka.jpg",
-                            Manufacturer = "BAKA",
-                            Name = "Поилка для птиц ВАКА №18"
+                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
+                            ImageSource = "/images/catalog/accessories/crystal.jpg",
+                            Manufacturer = "Crystal",
+                            Name = "Качели Crystal №18"
                         },
                         new
                         {
                             Id = 179,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №19"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №19"
                         },
                         new
                         {
                             Id = 180,
                             CategoryId = 9,
-                            Description = "Качели для Вашего питомца. Изготовлены из древесины.",
-                            ImageSource = "/images/catalog/accessories/crystal.jpg",
-                            Manufacturer = "Crystal",
-                            Name = "Качели Crystal №20"
+                            Description = "При помощи специального крепления изделие легко и надежно крепится как снаружи, так и внутри клетки. Такая поилка - идеальный вариант для клеток с вертикальными прутьями, при этом расстояние между ними не должно превышать 15 мм.",
+                            ImageSource = "/images/catalog/accessories/baka.jpg",
+                            Manufacturer = "BAKA",
+                            Name = "Поилка для птиц ВАКА №20"
                         });
                 });
 
@@ -2734,7 +2726,7 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.HasKey("ProductId", "IngredientId");
 
@@ -3081,7 +3073,7 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -3107,13 +3099,13 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("InStock")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("money");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -3131,112 +3123,112 @@ namespace Birdy.Server.Migrations
                         new
                         {
                             Id = 1,
-                            InStock = 47,
-                            Price = 1145m,
+                            InStock = 13,
+                            Price = 678m,
                             ProductId = 1,
                             Weight = 0
                         },
                         new
                         {
                             Id = 2,
-                            InStock = 0,
-                            Price = 1925m,
+                            InStock = 33,
+                            Price = 1089m,
                             ProductId = 2,
                             Weight = 0
                         },
                         new
                         {
                             Id = 3,
-                            InStock = 60,
-                            Price = 1147m,
+                            InStock = 62,
+                            Price = 905m,
                             ProductId = 3,
                             Weight = 0
                         },
                         new
                         {
                             Id = 4,
-                            InStock = 38,
-                            Price = 1032m,
+                            InStock = 29,
+                            Price = 1909m,
                             ProductId = 4,
                             Weight = 0
                         },
                         new
                         {
                             Id = 5,
-                            InStock = 31,
-                            Price = 779m,
+                            InStock = 15,
+                            Price = 1522m,
                             ProductId = 5,
                             Weight = 0
                         },
                         new
                         {
                             Id = 6,
-                            InStock = 98,
-                            Price = 781m,
+                            InStock = 9,
+                            Price = 1378m,
                             ProductId = 6,
                             Weight = 0
                         },
                         new
                         {
                             Id = 7,
-                            InStock = 34,
-                            Price = 1209m,
+                            InStock = 27,
+                            Price = 545m,
                             ProductId = 7,
                             Weight = 0
                         },
                         new
                         {
                             Id = 8,
-                            InStock = 38,
-                            Price = 1668m,
+                            InStock = 91,
+                            Price = 889m,
                             ProductId = 8,
                             Weight = 0
                         },
                         new
                         {
                             Id = 9,
-                            InStock = 21,
-                            Price = 440m,
+                            InStock = 76,
+                            Price = 1749m,
                             ProductId = 9,
                             Weight = 0
                         },
                         new
                         {
                             Id = 10,
-                            InStock = 57,
-                            Price = 1009m,
+                            InStock = 62,
+                            Price = 262m,
                             ProductId = 10,
                             Weight = 0
                         },
                         new
                         {
                             Id = 11,
-                            InStock = 52,
-                            Price = 399m,
+                            InStock = 67,
+                            Price = 640m,
                             ProductId = 11,
                             Weight = 0
                         },
                         new
                         {
                             Id = 12,
-                            InStock = 75,
-                            Price = 375m,
+                            InStock = 42,
+                            Price = 958m,
                             ProductId = 12,
                             Weight = 0
                         },
                         new
                         {
                             Id = 13,
-                            InStock = 77,
-                            Price = 1418m,
+                            InStock = 91,
+                            Price = 578m,
                             ProductId = 13,
                             Weight = 0
                         },
                         new
                         {
                             Id = 14,
-                            InStock = 83,
-                            Price = 1356m,
+                            InStock = 79,
+                            Price = 693m,
                             ProductId = 14,
                             Weight = 0
                         },
@@ -3244,167 +3236,167 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 15,
                             InStock = 54,
-                            Price = 1927m,
+                            Price = 1265m,
                             ProductId = 15,
                             Weight = 0
                         },
                         new
                         {
                             Id = 16,
-                            InStock = 82,
-                            Price = 1660m,
+                            InStock = 31,
+                            Price = 1064m,
                             ProductId = 16,
                             Weight = 0
                         },
                         new
                         {
                             Id = 17,
-                            InStock = 1,
-                            Price = 1381m,
+                            InStock = 5,
+                            Price = 1550m,
                             ProductId = 17,
                             Weight = 0
                         },
                         new
                         {
                             Id = 18,
-                            InStock = 89,
-                            Price = 1890m,
+                            InStock = 22,
+                            Price = 510m,
                             ProductId = 18,
                             Weight = 0
                         },
                         new
                         {
                             Id = 19,
-                            InStock = 20,
-                            Price = 1902m,
+                            InStock = 38,
+                            Price = 1469m,
                             ProductId = 19,
                             Weight = 0
                         },
                         new
                         {
                             Id = 20,
-                            InStock = 50,
-                            Price = 335m,
+                            InStock = 23,
+                            Price = 718m,
                             ProductId = 20,
                             Weight = 0
                         },
                         new
                         {
                             Id = 21,
-                            InStock = 4,
-                            Price = 263m,
+                            InStock = 60,
+                            Price = 378m,
                             ProductId = 21,
                             Weight = 200
                         },
                         new
                         {
                             Id = 22,
-                            InStock = 87,
-                            Price = 574m,
+                            InStock = 38,
+                            Price = 514m,
                             ProductId = 21,
                             Weight = 400
                         },
                         new
                         {
                             Id = 23,
-                            InStock = 99,
-                            Price = 979m,
+                            InStock = 73,
+                            Price = 822m,
                             ProductId = 21,
                             Weight = 800
                         },
                         new
                         {
                             Id = 24,
-                            InStock = 21,
-                            Price = 1001m,
+                            InStock = 37,
+                            Price = 1405m,
                             ProductId = 21,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 25,
-                            InStock = 49,
-                            Price = 372m,
+                            InStock = 39,
+                            Price = 207m,
                             ProductId = 22,
                             Weight = 200
                         },
                         new
                         {
                             Id = 26,
-                            InStock = 64,
-                            Price = 571m,
+                            InStock = 46,
+                            Price = 523m,
                             ProductId = 22,
                             Weight = 400
                         },
                         new
                         {
                             Id = 27,
-                            InStock = 33,
-                            Price = 916m,
+                            InStock = 95,
+                            Price = 944m,
                             ProductId = 22,
                             Weight = 800
                         },
                         new
                         {
                             Id = 28,
-                            InStock = 96,
-                            Price = 1313m,
+                            InStock = 54,
+                            Price = 1478m,
                             ProductId = 22,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 29,
-                            InStock = 7,
-                            Price = 229m,
+                            InStock = 93,
+                            Price = 250m,
                             ProductId = 23,
                             Weight = 200
                         },
                         new
                         {
                             Id = 30,
-                            InStock = 82,
-                            Price = 486m,
+                            InStock = 52,
+                            Price = 416m,
                             ProductId = 23,
                             Weight = 400
                         },
                         new
                         {
                             Id = 31,
-                            InStock = 67,
-                            Price = 857m,
+                            InStock = 64,
+                            Price = 981m,
                             ProductId = 23,
                             Weight = 800
                         },
                         new
                         {
                             Id = 32,
-                            InStock = 3,
-                            Price = 1381m,
+                            InStock = 20,
+                            Price = 1020m,
                             ProductId = 23,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 33,
-                            InStock = 82,
-                            Price = 395m,
+                            InStock = 80,
+                            Price = 338m,
                             ProductId = 24,
                             Weight = 200
                         },
                         new
                         {
                             Id = 34,
-                            InStock = 74,
-                            Price = 453m,
+                            InStock = 7,
+                            Price = 442m,
                             ProductId = 24,
                             Weight = 400
                         },
                         new
                         {
                             Id = 35,
-                            InStock = 1,
-                            Price = 884m,
+                            InStock = 82,
+                            Price = 830m,
                             ProductId = 24,
                             Weight = 800
                         },
@@ -3412,159 +3404,159 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 36,
                             InStock = 12,
-                            Price = 1070m,
+                            Price = 1436m,
                             ProductId = 24,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 37,
-                            InStock = 48,
-                            Price = 381m,
+                            InStock = 77,
+                            Price = 269m,
                             ProductId = 25,
                             Weight = 200
                         },
                         new
                         {
                             Id = 38,
-                            InStock = 77,
-                            Price = 573m,
+                            InStock = 90,
+                            Price = 497m,
                             ProductId = 25,
                             Weight = 400
                         },
                         new
                         {
                             Id = 39,
-                            InStock = 78,
-                            Price = 823m,
+                            InStock = 4,
+                            Price = 990m,
                             ProductId = 25,
                             Weight = 800
                         },
                         new
                         {
                             Id = 40,
-                            InStock = 92,
-                            Price = 1178m,
+                            InStock = 66,
+                            Price = 1110m,
                             ProductId = 25,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 41,
-                            InStock = 40,
-                            Price = 224m,
+                            InStock = 28,
+                            Price = 348m,
                             ProductId = 26,
                             Weight = 200
                         },
                         new
                         {
                             Id = 42,
-                            InStock = 19,
-                            Price = 574m,
+                            InStock = 81,
+                            Price = 496m,
                             ProductId = 26,
                             Weight = 400
                         },
                         new
                         {
                             Id = 43,
-                            InStock = 72,
-                            Price = 939m,
+                            InStock = 84,
+                            Price = 926m,
                             ProductId = 26,
                             Weight = 800
                         },
                         new
                         {
                             Id = 44,
-                            InStock = 46,
-                            Price = 1347m,
+                            InStock = 53,
+                            Price = 1084m,
                             ProductId = 26,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 45,
-                            InStock = 92,
-                            Price = 236m,
+                            InStock = 44,
+                            Price = 204m,
                             ProductId = 27,
                             Weight = 200
                         },
                         new
                         {
                             Id = 46,
-                            InStock = 86,
-                            Price = 565m,
+                            InStock = 6,
+                            Price = 414m,
                             ProductId = 27,
                             Weight = 400
                         },
                         new
                         {
                             Id = 47,
-                            InStock = 97,
-                            Price = 895m,
+                            InStock = 53,
+                            Price = 911m,
                             ProductId = 27,
                             Weight = 800
                         },
                         new
                         {
                             Id = 48,
-                            InStock = 46,
-                            Price = 1416m,
+                            InStock = 73,
+                            Price = 1448m,
                             ProductId = 27,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 49,
-                            InStock = 10,
-                            Price = 339m,
+                            InStock = 26,
+                            Price = 304m,
                             ProductId = 28,
                             Weight = 200
                         },
                         new
                         {
                             Id = 50,
-                            InStock = 74,
-                            Price = 423m,
+                            InStock = 43,
+                            Price = 495m,
                             ProductId = 28,
                             Weight = 400
                         },
                         new
                         {
                             Id = 51,
-                            InStock = 67,
-                            Price = 835m,
+                            InStock = 82,
+                            Price = 878m,
                             ProductId = 28,
                             Weight = 800
                         },
                         new
                         {
                             Id = 52,
-                            InStock = 8,
-                            Price = 1377m,
+                            InStock = 94,
+                            Price = 1311m,
                             ProductId = 28,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 53,
-                            InStock = 39,
-                            Price = 287m,
+                            InStock = 0,
+                            Price = 285m,
                             ProductId = 29,
                             Weight = 200
                         },
                         new
                         {
                             Id = 54,
-                            InStock = 43,
-                            Price = 471m,
+                            InStock = 18,
+                            Price = 481m,
                             ProductId = 29,
                             Weight = 400
                         },
                         new
                         {
                             Id = 55,
-                            InStock = 14,
-                            Price = 911m,
+                            InStock = 24,
+                            Price = 890m,
                             ProductId = 29,
                             Weight = 800
                         },
@@ -3572,1479 +3564,1479 @@ namespace Birdy.Server.Migrations
                         {
                             Id = 56,
                             InStock = 39,
-                            Price = 1377m,
+                            Price = 1026m,
                             ProductId = 29,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 57,
-                            InStock = 72,
-                            Price = 230m,
+                            InStock = 87,
+                            Price = 225m,
                             ProductId = 30,
                             Weight = 200
                         },
                         new
                         {
                             Id = 58,
-                            InStock = 86,
-                            Price = 438m,
+                            InStock = 32,
+                            Price = 539m,
                             ProductId = 30,
                             Weight = 400
                         },
                         new
                         {
                             Id = 59,
-                            InStock = 14,
-                            Price = 834m,
+                            InStock = 12,
+                            Price = 883m,
                             ProductId = 30,
                             Weight = 800
                         },
                         new
                         {
                             Id = 60,
-                            InStock = 86,
-                            Price = 1292m,
+                            InStock = 56,
+                            Price = 1180m,
                             ProductId = 30,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 61,
-                            InStock = 29,
-                            Price = 330m,
+                            InStock = 82,
+                            Price = 385m,
                             ProductId = 31,
                             Weight = 200
                         },
                         new
                         {
                             Id = 62,
-                            InStock = 80,
-                            Price = 564m,
+                            InStock = 72,
+                            Price = 517m,
                             ProductId = 31,
                             Weight = 400
                         },
                         new
                         {
                             Id = 63,
-                            InStock = 47,
-                            Price = 924m,
+                            InStock = 24,
+                            Price = 859m,
                             ProductId = 31,
                             Weight = 800
                         },
                         new
                         {
                             Id = 64,
-                            InStock = 42,
-                            Price = 1354m,
+                            InStock = 45,
+                            Price = 1323m,
                             ProductId = 31,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 65,
-                            InStock = 94,
-                            Price = 254m,
+                            InStock = 77,
+                            Price = 333m,
                             ProductId = 32,
                             Weight = 200
                         },
                         new
                         {
                             Id = 66,
-                            InStock = 3,
-                            Price = 462m,
+                            InStock = 25,
+                            Price = 570m,
                             ProductId = 32,
                             Weight = 400
                         },
                         new
                         {
                             Id = 67,
-                            InStock = 48,
-                            Price = 801m,
+                            InStock = 58,
+                            Price = 891m,
                             ProductId = 32,
                             Weight = 800
                         },
                         new
                         {
                             Id = 68,
-                            InStock = 96,
-                            Price = 1143m,
+                            InStock = 94,
+                            Price = 1220m,
                             ProductId = 32,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 69,
-                            InStock = 62,
-                            Price = 203m,
+                            InStock = 20,
+                            Price = 278m,
                             ProductId = 33,
                             Weight = 200
                         },
                         new
                         {
                             Id = 70,
-                            InStock = 45,
-                            Price = 571m,
+                            InStock = 53,
+                            Price = 409m,
                             ProductId = 33,
                             Weight = 400
                         },
                         new
                         {
                             Id = 71,
-                            InStock = 60,
-                            Price = 909m,
+                            InStock = 98,
+                            Price = 919m,
                             ProductId = 33,
                             Weight = 800
                         },
                         new
                         {
                             Id = 72,
-                            InStock = 38,
-                            Price = 1193m,
+                            InStock = 20,
+                            Price = 1078m,
                             ProductId = 33,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 73,
-                            InStock = 56,
-                            Price = 259m,
+                            InStock = 4,
+                            Price = 299m,
                             ProductId = 34,
                             Weight = 200
                         },
                         new
                         {
                             Id = 74,
-                            InStock = 67,
-                            Price = 535m,
+                            InStock = 74,
+                            Price = 577m,
                             ProductId = 34,
                             Weight = 400
                         },
                         new
                         {
                             Id = 75,
-                            InStock = 28,
-                            Price = 948m,
+                            InStock = 56,
+                            Price = 928m,
                             ProductId = 34,
                             Weight = 800
                         },
                         new
                         {
                             Id = 76,
-                            InStock = 96,
-                            Price = 1461m,
+                            InStock = 63,
+                            Price = 1359m,
                             ProductId = 34,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 77,
-                            InStock = 17,
-                            Price = 272m,
+                            InStock = 65,
+                            Price = 365m,
                             ProductId = 35,
                             Weight = 200
                         },
                         new
                         {
                             Id = 78,
-                            InStock = 15,
-                            Price = 473m,
+                            InStock = 88,
+                            Price = 410m,
                             ProductId = 35,
                             Weight = 400
                         },
                         new
                         {
                             Id = 79,
-                            InStock = 56,
-                            Price = 972m,
+                            InStock = 2,
+                            Price = 999m,
                             ProductId = 35,
                             Weight = 800
                         },
                         new
                         {
                             Id = 80,
-                            InStock = 84,
-                            Price = 1457m,
+                            InStock = 2,
+                            Price = 1264m,
                             ProductId = 35,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 81,
-                            InStock = 79,
-                            Price = 339m,
+                            InStock = 69,
+                            Price = 247m,
                             ProductId = 36,
                             Weight = 200
                         },
                         new
                         {
                             Id = 82,
-                            InStock = 9,
-                            Price = 413m,
+                            InStock = 28,
+                            Price = 487m,
                             ProductId = 36,
                             Weight = 400
                         },
                         new
                         {
                             Id = 83,
-                            InStock = 80,
-                            Price = 920m,
+                            InStock = 98,
+                            Price = 839m,
                             ProductId = 36,
                             Weight = 800
                         },
                         new
                         {
                             Id = 84,
-                            InStock = 7,
-                            Price = 1170m,
+                            InStock = 40,
+                            Price = 1197m,
                             ProductId = 36,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 85,
-                            InStock = 37,
-                            Price = 225m,
+                            InStock = 57,
+                            Price = 273m,
                             ProductId = 37,
                             Weight = 200
                         },
                         new
                         {
                             Id = 86,
-                            InStock = 50,
-                            Price = 572m,
+                            InStock = 65,
+                            Price = 450m,
                             ProductId = 37,
                             Weight = 400
                         },
                         new
                         {
                             Id = 87,
-                            InStock = 66,
-                            Price = 973m,
+                            InStock = 40,
+                            Price = 947m,
                             ProductId = 37,
                             Weight = 800
                         },
                         new
                         {
                             Id = 88,
-                            InStock = 50,
-                            Price = 1133m,
+                            InStock = 73,
+                            Price = 1273m,
                             ProductId = 37,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 89,
-                            InStock = 65,
-                            Price = 278m,
+                            InStock = 46,
+                            Price = 322m,
                             ProductId = 38,
                             Weight = 200
                         },
                         new
                         {
                             Id = 90,
-                            InStock = 25,
-                            Price = 464m,
+                            InStock = 64,
+                            Price = 543m,
                             ProductId = 38,
                             Weight = 400
                         },
                         new
                         {
                             Id = 91,
-                            InStock = 60,
-                            Price = 976m,
+                            InStock = 88,
+                            Price = 881m,
                             ProductId = 38,
                             Weight = 800
                         },
                         new
                         {
                             Id = 92,
-                            InStock = 61,
-                            Price = 1275m,
+                            InStock = 17,
+                            Price = 1215m,
                             ProductId = 38,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 93,
-                            InStock = 21,
-                            Price = 248m,
+                            InStock = 46,
+                            Price = 244m,
                             ProductId = 39,
                             Weight = 200
                         },
                         new
                         {
                             Id = 94,
-                            InStock = 15,
-                            Price = 542m,
+                            InStock = 86,
+                            Price = 473m,
                             ProductId = 39,
                             Weight = 400
                         },
                         new
                         {
                             Id = 95,
-                            InStock = 28,
-                            Price = 881m,
+                            InStock = 21,
+                            Price = 823m,
                             ProductId = 39,
                             Weight = 800
                         },
                         new
                         {
                             Id = 96,
-                            InStock = 57,
-                            Price = 1369m,
+                            InStock = 13,
+                            Price = 1426m,
                             ProductId = 39,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 97,
-                            InStock = 0,
-                            Price = 305m,
+                            InStock = 27,
+                            Price = 261m,
                             ProductId = 40,
                             Weight = 200
                         },
                         new
                         {
                             Id = 98,
-                            InStock = 36,
-                            Price = 439m,
+                            InStock = 54,
+                            Price = 566m,
                             ProductId = 40,
                             Weight = 400
                         },
                         new
                         {
                             Id = 99,
-                            InStock = 19,
-                            Price = 982m,
+                            InStock = 52,
+                            Price = 884m,
                             ProductId = 40,
                             Weight = 800
                         },
                         new
                         {
                             Id = 100,
-                            InStock = 52,
-                            Price = 1139m,
+                            InStock = 47,
+                            Price = 1168m,
                             ProductId = 40,
                             Weight = 1000
                         },
                         new
                         {
                             Id = 101,
-                            InStock = 2,
-                            Price = 715m,
+                            InStock = 94,
+                            Price = 246m,
                             ProductId = 41,
                             Weight = 0
                         },
                         new
                         {
                             Id = 102,
-                            InStock = 7,
-                            Price = 790m,
+                            InStock = 34,
+                            Price = 282m,
                             ProductId = 42,
                             Weight = 0
                         },
                         new
                         {
                             Id = 103,
-                            InStock = 83,
-                            Price = 939m,
+                            InStock = 45,
+                            Price = 1947m,
                             ProductId = 43,
                             Weight = 0
                         },
                         new
                         {
                             Id = 104,
-                            InStock = 54,
-                            Price = 1213m,
+                            InStock = 18,
+                            Price = 1135m,
                             ProductId = 44,
                             Weight = 0
                         },
                         new
                         {
                             Id = 105,
-                            InStock = 65,
-                            Price = 1245m,
+                            InStock = 47,
+                            Price = 576m,
                             ProductId = 45,
                             Weight = 0
                         },
                         new
                         {
                             Id = 106,
-                            InStock = 34,
-                            Price = 1707m,
+                            InStock = 61,
+                            Price = 489m,
                             ProductId = 46,
                             Weight = 0
                         },
                         new
                         {
                             Id = 107,
-                            InStock = 7,
-                            Price = 970m,
+                            InStock = 97,
+                            Price = 1318m,
                             ProductId = 47,
                             Weight = 0
                         },
                         new
                         {
                             Id = 108,
-                            InStock = 93,
-                            Price = 1043m,
+                            InStock = 44,
+                            Price = 1501m,
                             ProductId = 48,
                             Weight = 0
                         },
                         new
                         {
                             Id = 109,
-                            InStock = 94,
-                            Price = 1351m,
+                            InStock = 8,
+                            Price = 426m,
                             ProductId = 49,
                             Weight = 0
                         },
                         new
                         {
                             Id = 110,
-                            InStock = 22,
-                            Price = 729m,
+                            InStock = 14,
+                            Price = 1946m,
                             ProductId = 50,
                             Weight = 0
                         },
                         new
                         {
                             Id = 111,
-                            InStock = 22,
-                            Price = 310m,
+                            InStock = 39,
+                            Price = 583m,
                             ProductId = 51,
                             Weight = 0
                         },
                         new
                         {
                             Id = 112,
-                            InStock = 60,
-                            Price = 314m,
+                            InStock = 62,
+                            Price = 1171m,
                             ProductId = 52,
                             Weight = 0
                         },
                         new
                         {
                             Id = 113,
-                            InStock = 53,
-                            Price = 1059m,
+                            InStock = 98,
+                            Price = 732m,
                             ProductId = 53,
                             Weight = 0
                         },
                         new
                         {
                             Id = 114,
-                            InStock = 77,
-                            Price = 598m,
+                            InStock = 52,
+                            Price = 1508m,
                             ProductId = 54,
                             Weight = 0
                         },
                         new
                         {
                             Id = 115,
-                            InStock = 37,
-                            Price = 1239m,
+                            InStock = 53,
+                            Price = 1882m,
                             ProductId = 55,
                             Weight = 0
                         },
                         new
                         {
                             Id = 116,
-                            InStock = 54,
-                            Price = 553m,
+                            InStock = 28,
+                            Price = 1592m,
                             ProductId = 56,
                             Weight = 0
                         },
                         new
                         {
                             Id = 117,
-                            InStock = 50,
-                            Price = 791m,
+                            InStock = 37,
+                            Price = 762m,
                             ProductId = 57,
                             Weight = 0
                         },
                         new
                         {
                             Id = 118,
-                            InStock = 57,
-                            Price = 1728m,
+                            InStock = 56,
+                            Price = 1137m,
                             ProductId = 58,
                             Weight = 0
                         },
                         new
                         {
                             Id = 119,
-                            InStock = 8,
-                            Price = 853m,
+                            InStock = 97,
+                            Price = 1737m,
                             ProductId = 59,
                             Weight = 0
                         },
                         new
                         {
                             Id = 120,
-                            InStock = 33,
-                            Price = 320m,
+                            InStock = 56,
+                            Price = 901m,
                             ProductId = 60,
                             Weight = 0
                         },
                         new
                         {
                             Id = 121,
-                            InStock = 79,
-                            Price = 691m,
+                            InStock = 49,
+                            Price = 299m,
                             ProductId = 61,
                             Weight = 0
                         },
                         new
                         {
                             Id = 122,
-                            InStock = 54,
-                            Price = 866m,
+                            InStock = 63,
+                            Price = 1657m,
                             ProductId = 62,
                             Weight = 0
                         },
                         new
                         {
                             Id = 123,
-                            InStock = 3,
-                            Price = 1503m,
+                            InStock = 86,
+                            Price = 1301m,
                             ProductId = 63,
                             Weight = 0
                         },
                         new
                         {
                             Id = 124,
-                            InStock = 35,
-                            Price = 654m,
+                            InStock = 18,
+                            Price = 671m,
                             ProductId = 64,
                             Weight = 0
                         },
                         new
                         {
                             Id = 125,
-                            InStock = 72,
-                            Price = 316m,
+                            InStock = 88,
+                            Price = 1577m,
                             ProductId = 65,
                             Weight = 0
                         },
                         new
                         {
                             Id = 126,
-                            InStock = 98,
-                            Price = 709m,
+                            InStock = 34,
+                            Price = 1793m,
                             ProductId = 66,
                             Weight = 0
                         },
                         new
                         {
                             Id = 127,
-                            InStock = 63,
-                            Price = 1221m,
+                            InStock = 87,
+                            Price = 1165m,
                             ProductId = 67,
                             Weight = 0
                         },
                         new
                         {
                             Id = 128,
-                            InStock = 76,
-                            Price = 631m,
+                            InStock = 24,
+                            Price = 1567m,
                             ProductId = 68,
                             Weight = 0
                         },
                         new
                         {
                             Id = 129,
-                            InStock = 89,
-                            Price = 662m,
+                            InStock = 22,
+                            Price = 1463m,
                             ProductId = 69,
                             Weight = 0
                         },
                         new
                         {
                             Id = 130,
-                            InStock = 0,
-                            Price = 1967m,
+                            InStock = 6,
+                            Price = 1002m,
                             ProductId = 70,
                             Weight = 0
                         },
                         new
                         {
                             Id = 131,
-                            InStock = 81,
-                            Price = 1121m,
+                            InStock = 18,
+                            Price = 334m,
                             ProductId = 71,
                             Weight = 0
                         },
                         new
                         {
                             Id = 132,
-                            InStock = 89,
-                            Price = 1391m,
+                            InStock = 1,
+                            Price = 870m,
                             ProductId = 72,
                             Weight = 0
                         },
                         new
                         {
                             Id = 133,
-                            InStock = 28,
-                            Price = 1916m,
+                            InStock = 55,
+                            Price = 975m,
                             ProductId = 73,
                             Weight = 0
                         },
                         new
                         {
                             Id = 134,
-                            InStock = 11,
-                            Price = 1198m,
+                            InStock = 35,
+                            Price = 300m,
                             ProductId = 74,
                             Weight = 0
                         },
                         new
                         {
                             Id = 135,
-                            InStock = 61,
-                            Price = 964m,
+                            InStock = 4,
+                            Price = 869m,
                             ProductId = 75,
                             Weight = 0
                         },
                         new
                         {
                             Id = 136,
-                            InStock = 28,
-                            Price = 392m,
+                            InStock = 46,
+                            Price = 1563m,
                             ProductId = 76,
                             Weight = 0
                         },
                         new
                         {
                             Id = 137,
-                            InStock = 21,
-                            Price = 346m,
+                            InStock = 99,
+                            Price = 485m,
                             ProductId = 77,
                             Weight = 0
                         },
                         new
                         {
                             Id = 138,
-                            InStock = 16,
-                            Price = 556m,
+                            InStock = 8,
+                            Price = 1520m,
                             ProductId = 78,
                             Weight = 0
                         },
                         new
                         {
                             Id = 139,
-                            InStock = 36,
-                            Price = 1644m,
+                            InStock = 5,
+                            Price = 817m,
                             ProductId = 79,
                             Weight = 0
                         },
                         new
                         {
                             Id = 140,
-                            InStock = 51,
-                            Price = 1282m,
+                            InStock = 29,
+                            Price = 1512m,
                             ProductId = 80,
                             Weight = 0
                         },
                         new
                         {
                             Id = 141,
-                            InStock = 43,
-                            Price = 215m,
+                            InStock = 14,
+                            Price = 1772m,
                             ProductId = 81,
                             Weight = 0
                         },
                         new
                         {
                             Id = 142,
-                            InStock = 55,
-                            Price = 1116m,
+                            InStock = 60,
+                            Price = 1440m,
                             ProductId = 82,
                             Weight = 0
                         },
                         new
                         {
                             Id = 143,
-                            InStock = 32,
-                            Price = 1802m,
+                            InStock = 18,
+                            Price = 1938m,
                             ProductId = 83,
                             Weight = 0
                         },
                         new
                         {
                             Id = 144,
-                            InStock = 5,
-                            Price = 1715m,
+                            InStock = 34,
+                            Price = 1610m,
                             ProductId = 84,
                             Weight = 0
                         },
                         new
                         {
                             Id = 145,
-                            InStock = 27,
-                            Price = 350m,
+                            InStock = 78,
+                            Price = 996m,
                             ProductId = 85,
                             Weight = 0
                         },
                         new
                         {
                             Id = 146,
-                            InStock = 30,
-                            Price = 1755m,
+                            InStock = 58,
+                            Price = 1824m,
                             ProductId = 86,
                             Weight = 0
                         },
                         new
                         {
                             Id = 147,
-                            InStock = 98,
-                            Price = 377m,
+                            InStock = 36,
+                            Price = 1135m,
                             ProductId = 87,
                             Weight = 0
                         },
                         new
                         {
                             Id = 148,
-                            InStock = 55,
-                            Price = 287m,
+                            InStock = 80,
+                            Price = 359m,
                             ProductId = 88,
                             Weight = 0
                         },
                         new
                         {
                             Id = 149,
-                            InStock = 40,
-                            Price = 1452m,
+                            InStock = 66,
+                            Price = 1620m,
                             ProductId = 89,
                             Weight = 0
                         },
                         new
                         {
                             Id = 150,
-                            InStock = 65,
-                            Price = 222m,
+                            InStock = 80,
+                            Price = 1919m,
                             ProductId = 90,
                             Weight = 0
                         },
                         new
                         {
                             Id = 151,
-                            InStock = 47,
-                            Price = 1628m,
+                            InStock = 2,
+                            Price = 1807m,
                             ProductId = 91,
                             Weight = 0
                         },
                         new
                         {
                             Id = 152,
-                            InStock = 34,
-                            Price = 1672m,
+                            InStock = 36,
+                            Price = 1216m,
                             ProductId = 92,
                             Weight = 0
                         },
                         new
                         {
                             Id = 153,
-                            InStock = 8,
-                            Price = 604m,
+                            InStock = 66,
+                            Price = 1111m,
                             ProductId = 93,
                             Weight = 0
                         },
                         new
                         {
                             Id = 154,
-                            InStock = 93,
-                            Price = 744m,
+                            InStock = 46,
+                            Price = 806m,
                             ProductId = 94,
                             Weight = 0
                         },
                         new
                         {
                             Id = 155,
-                            InStock = 73,
-                            Price = 839m,
+                            InStock = 99,
+                            Price = 340m,
                             ProductId = 95,
                             Weight = 0
                         },
                         new
                         {
                             Id = 156,
-                            InStock = 93,
-                            Price = 883m,
+                            InStock = 84,
+                            Price = 519m,
                             ProductId = 96,
                             Weight = 0
                         },
                         new
                         {
                             Id = 157,
-                            InStock = 52,
-                            Price = 1445m,
+                            InStock = 84,
+                            Price = 1634m,
                             ProductId = 97,
                             Weight = 0
                         },
                         new
                         {
                             Id = 158,
-                            InStock = 86,
-                            Price = 975m,
+                            InStock = 24,
+                            Price = 1943m,
                             ProductId = 98,
                             Weight = 0
                         },
                         new
                         {
                             Id = 159,
-                            InStock = 71,
-                            Price = 425m,
+                            InStock = 43,
+                            Price = 239m,
                             ProductId = 99,
                             Weight = 0
                         },
                         new
                         {
                             Id = 160,
-                            InStock = 94,
-                            Price = 1134m,
+                            InStock = 45,
+                            Price = 211m,
                             ProductId = 100,
                             Weight = 0
                         },
                         new
                         {
                             Id = 161,
-                            InStock = 38,
-                            Price = 475m,
+                            InStock = 81,
+                            Price = 835m,
                             ProductId = 101,
                             Weight = 0
                         },
                         new
                         {
                             Id = 162,
-                            InStock = 34,
-                            Price = 1724m,
+                            InStock = 22,
+                            Price = 859m,
                             ProductId = 102,
                             Weight = 0
                         },
                         new
                         {
                             Id = 163,
-                            InStock = 7,
-                            Price = 1024m,
+                            InStock = 10,
+                            Price = 298m,
                             ProductId = 103,
                             Weight = 0
                         },
                         new
                         {
                             Id = 164,
-                            InStock = 85,
-                            Price = 330m,
+                            InStock = 53,
+                            Price = 1867m,
                             ProductId = 104,
                             Weight = 0
                         },
                         new
                         {
                             Id = 165,
-                            InStock = 97,
-                            Price = 460m,
+                            InStock = 39,
+                            Price = 600m,
                             ProductId = 105,
                             Weight = 0
                         },
                         new
                         {
                             Id = 166,
-                            InStock = 67,
-                            Price = 1165m,
+                            InStock = 5,
+                            Price = 1952m,
                             ProductId = 106,
                             Weight = 0
                         },
                         new
                         {
                             Id = 167,
-                            InStock = 59,
-                            Price = 284m,
+                            InStock = 35,
+                            Price = 234m,
                             ProductId = 107,
                             Weight = 0
                         },
                         new
                         {
                             Id = 168,
-                            InStock = 72,
-                            Price = 585m,
+                            InStock = 26,
+                            Price = 833m,
                             ProductId = 108,
                             Weight = 0
                         },
                         new
                         {
                             Id = 169,
-                            InStock = 26,
-                            Price = 895m,
+                            InStock = 18,
+                            Price = 1261m,
                             ProductId = 109,
                             Weight = 0
                         },
                         new
                         {
                             Id = 170,
-                            InStock = 17,
-                            Price = 1537m,
+                            InStock = 98,
+                            Price = 1977m,
                             ProductId = 110,
                             Weight = 0
                         },
                         new
                         {
                             Id = 171,
-                            InStock = 14,
-                            Price = 695m,
+                            InStock = 77,
+                            Price = 1233m,
                             ProductId = 111,
                             Weight = 0
                         },
                         new
                         {
                             Id = 172,
-                            InStock = 1,
-                            Price = 890m,
+                            InStock = 86,
+                            Price = 1463m,
                             ProductId = 112,
                             Weight = 0
                         },
                         new
                         {
                             Id = 173,
-                            InStock = 55,
-                            Price = 602m,
+                            InStock = 42,
+                            Price = 1234m,
                             ProductId = 113,
                             Weight = 0
                         },
                         new
                         {
                             Id = 174,
-                            InStock = 37,
-                            Price = 404m,
+                            InStock = 26,
+                            Price = 1611m,
                             ProductId = 114,
                             Weight = 0
                         },
                         new
                         {
                             Id = 175,
-                            InStock = 9,
-                            Price = 1401m,
+                            InStock = 42,
+                            Price = 449m,
                             ProductId = 115,
                             Weight = 0
                         },
                         new
                         {
                             Id = 176,
-                            InStock = 67,
-                            Price = 1770m,
+                            InStock = 30,
+                            Price = 1863m,
                             ProductId = 116,
                             Weight = 0
                         },
                         new
                         {
                             Id = 177,
-                            InStock = 31,
-                            Price = 849m,
+                            InStock = 39,
+                            Price = 858m,
                             ProductId = 117,
                             Weight = 0
                         },
                         new
                         {
                             Id = 178,
-                            InStock = 80,
-                            Price = 1630m,
+                            InStock = 89,
+                            Price = 1592m,
                             ProductId = 118,
                             Weight = 0
                         },
                         new
                         {
                             Id = 179,
-                            InStock = 67,
-                            Price = 314m,
+                            InStock = 70,
+                            Price = 950m,
                             ProductId = 119,
                             Weight = 0
                         },
                         new
                         {
                             Id = 180,
-                            InStock = 36,
-                            Price = 267m,
+                            InStock = 65,
+                            Price = 1214m,
                             ProductId = 120,
                             Weight = 0
                         },
                         new
                         {
                             Id = 181,
-                            InStock = 92,
-                            Price = 530m,
+                            InStock = 43,
+                            Price = 1272m,
                             ProductId = 121,
                             Weight = 0
                         },
                         new
                         {
                             Id = 182,
-                            InStock = 58,
-                            Price = 1990m,
+                            InStock = 39,
+                            Price = 1414m,
                             ProductId = 122,
                             Weight = 0
                         },
                         new
                         {
                             Id = 183,
-                            InStock = 14,
-                            Price = 308m,
+                            InStock = 44,
+                            Price = 558m,
                             ProductId = 123,
                             Weight = 0
                         },
                         new
                         {
                             Id = 184,
-                            InStock = 86,
-                            Price = 791m,
+                            InStock = 24,
+                            Price = 250m,
                             ProductId = 124,
                             Weight = 0
                         },
                         new
                         {
                             Id = 185,
-                            InStock = 14,
-                            Price = 1167m,
+                            InStock = 24,
+                            Price = 731m,
                             ProductId = 125,
                             Weight = 0
                         },
                         new
                         {
                             Id = 186,
-                            InStock = 41,
-                            Price = 1904m,
+                            InStock = 54,
+                            Price = 946m,
                             ProductId = 126,
                             Weight = 0
                         },
                         new
                         {
                             Id = 187,
-                            InStock = 15,
-                            Price = 1780m,
+                            InStock = 52,
+                            Price = 1459m,
                             ProductId = 127,
                             Weight = 0
                         },
                         new
                         {
                             Id = 188,
-                            InStock = 35,
-                            Price = 429m,
+                            InStock = 71,
+                            Price = 618m,
                             ProductId = 128,
                             Weight = 0
                         },
                         new
                         {
                             Id = 189,
-                            InStock = 14,
-                            Price = 737m,
+                            InStock = 60,
+                            Price = 1344m,
                             ProductId = 129,
                             Weight = 0
                         },
                         new
                         {
                             Id = 190,
-                            InStock = 51,
-                            Price = 1485m,
+                            InStock = 49,
+                            Price = 666m,
                             ProductId = 130,
                             Weight = 0
                         },
                         new
                         {
                             Id = 191,
-                            InStock = 94,
-                            Price = 623m,
+                            InStock = 98,
+                            Price = 843m,
                             ProductId = 131,
                             Weight = 0
                         },
                         new
                         {
                             Id = 192,
-                            InStock = 41,
-                            Price = 515m,
+                            InStock = 79,
+                            Price = 705m,
                             ProductId = 132,
                             Weight = 0
                         },
                         new
                         {
                             Id = 193,
-                            InStock = 79,
-                            Price = 1131m,
+                            InStock = 82,
+                            Price = 1384m,
                             ProductId = 133,
                             Weight = 0
                         },
                         new
                         {
                             Id = 194,
-                            InStock = 39,
-                            Price = 566m,
+                            InStock = 87,
+                            Price = 507m,
                             ProductId = 134,
                             Weight = 0
                         },
                         new
                         {
                             Id = 195,
-                            InStock = 64,
-                            Price = 1164m,
+                            InStock = 17,
+                            Price = 617m,
                             ProductId = 135,
                             Weight = 0
                         },
                         new
                         {
                             Id = 196,
-                            InStock = 6,
-                            Price = 939m,
+                            InStock = 78,
+                            Price = 1647m,
                             ProductId = 136,
                             Weight = 0
                         },
                         new
                         {
                             Id = 197,
-                            InStock = 80,
-                            Price = 1742m,
+                            InStock = 3,
+                            Price = 1177m,
                             ProductId = 137,
                             Weight = 0
                         },
                         new
                         {
                             Id = 198,
-                            InStock = 65,
-                            Price = 840m,
+                            InStock = 38,
+                            Price = 208m,
                             ProductId = 138,
                             Weight = 0
                         },
                         new
                         {
                             Id = 199,
-                            InStock = 3,
-                            Price = 918m,
+                            InStock = 53,
+                            Price = 1853m,
                             ProductId = 139,
                             Weight = 0
                         },
                         new
                         {
                             Id = 200,
-                            InStock = 91,
-                            Price = 1645m,
+                            InStock = 88,
+                            Price = 306m,
                             ProductId = 140,
                             Weight = 0
                         },
                         new
                         {
                             Id = 201,
-                            InStock = 53,
-                            Price = 557m,
+                            InStock = 6,
+                            Price = 567m,
                             ProductId = 141,
                             Weight = 0
                         },
                         new
                         {
                             Id = 202,
-                            InStock = 40,
-                            Price = 288m,
+                            InStock = 2,
+                            Price = 1185m,
                             ProductId = 142,
                             Weight = 0
                         },
                         new
                         {
                             Id = 203,
-                            InStock = 88,
-                            Price = 1832m,
+                            InStock = 7,
+                            Price = 1564m,
                             ProductId = 143,
                             Weight = 0
                         },
                         new
                         {
                             Id = 204,
-                            InStock = 25,
-                            Price = 953m,
+                            InStock = 40,
+                            Price = 996m,
                             ProductId = 144,
                             Weight = 0
                         },
                         new
                         {
                             Id = 205,
-                            InStock = 93,
-                            Price = 1477m,
+                            InStock = 41,
+                            Price = 737m,
                             ProductId = 145,
                             Weight = 0
                         },
                         new
                         {
                             Id = 206,
-                            InStock = 55,
-                            Price = 906m,
+                            InStock = 5,
+                            Price = 1263m,
                             ProductId = 146,
                             Weight = 0
                         },
                         new
                         {
                             Id = 207,
-                            InStock = 71,
-                            Price = 1296m,
+                            InStock = 9,
+                            Price = 1242m,
                             ProductId = 147,
                             Weight = 0
                         },
                         new
                         {
                             Id = 208,
-                            InStock = 35,
-                            Price = 586m,
+                            InStock = 59,
+                            Price = 1150m,
                             ProductId = 148,
                             Weight = 0
                         },
                         new
                         {
                             Id = 209,
-                            InStock = 42,
-                            Price = 588m,
+                            InStock = 45,
+                            Price = 1075m,
                             ProductId = 149,
                             Weight = 0
                         },
                         new
                         {
                             Id = 210,
-                            InStock = 39,
-                            Price = 1231m,
+                            InStock = 91,
+                            Price = 1707m,
                             ProductId = 150,
                             Weight = 0
                         },
                         new
                         {
                             Id = 211,
-                            InStock = 99,
-                            Price = 260m,
+                            InStock = 93,
+                            Price = 1308m,
                             ProductId = 151,
                             Weight = 0
                         },
                         new
                         {
                             Id = 212,
-                            InStock = 33,
-                            Price = 1382m,
+                            InStock = 85,
+                            Price = 1407m,
                             ProductId = 152,
                             Weight = 0
                         },
                         new
                         {
                             Id = 213,
-                            InStock = 36,
-                            Price = 1844m,
+                            InStock = 34,
+                            Price = 1713m,
                             ProductId = 153,
                             Weight = 0
                         },
                         new
                         {
                             Id = 214,
-                            InStock = 62,
-                            Price = 1056m,
+                            InStock = 70,
+                            Price = 1000m,
                             ProductId = 154,
                             Weight = 0
                         },
                         new
                         {
                             Id = 215,
-                            InStock = 31,
-                            Price = 258m,
+                            InStock = 41,
+                            Price = 1627m,
                             ProductId = 155,
                             Weight = 0
                         },
                         new
                         {
                             Id = 216,
-                            InStock = 9,
-                            Price = 318m,
+                            InStock = 18,
+                            Price = 1388m,
                             ProductId = 156,
                             Weight = 0
                         },
                         new
                         {
                             Id = 217,
-                            InStock = 6,
-                            Price = 307m,
+                            InStock = 59,
+                            Price = 800m,
                             ProductId = 157,
                             Weight = 0
                         },
                         new
                         {
                             Id = 218,
-                            InStock = 60,
-                            Price = 1046m,
+                            InStock = 84,
+                            Price = 857m,
                             ProductId = 158,
                             Weight = 0
                         },
                         new
                         {
                             Id = 219,
-                            InStock = 4,
-                            Price = 1027m,
+                            InStock = 94,
+                            Price = 1394m,
                             ProductId = 159,
                             Weight = 0
                         },
                         new
                         {
                             Id = 220,
-                            InStock = 95,
-                            Price = 983m,
+                            InStock = 26,
+                            Price = 1727m,
                             ProductId = 160,
                             Weight = 0
                         },
                         new
                         {
                             Id = 221,
-                            InStock = 98,
-                            Price = 912m,
+                            InStock = 15,
+                            Price = 1987m,
                             ProductId = 161,
                             Weight = 0
                         },
                         new
                         {
                             Id = 222,
-                            InStock = 19,
-                            Price = 1091m,
+                            InStock = 42,
+                            Price = 1686m,
                             ProductId = 162,
                             Weight = 0
                         },
                         new
                         {
                             Id = 223,
-                            InStock = 15,
-                            Price = 498m,
+                            InStock = 79,
+                            Price = 1150m,
                             ProductId = 163,
                             Weight = 0
                         },
                         new
                         {
                             Id = 224,
-                            InStock = 18,
-                            Price = 688m,
+                            InStock = 67,
+                            Price = 1445m,
                             ProductId = 164,
                             Weight = 0
                         },
                         new
                         {
                             Id = 225,
-                            InStock = 10,
-                            Price = 1996m,
+                            InStock = 95,
+                            Price = 1955m,
                             ProductId = 165,
                             Weight = 0
                         },
                         new
                         {
                             Id = 226,
-                            InStock = 71,
-                            Price = 235m,
+                            InStock = 69,
+                            Price = 594m,
                             ProductId = 166,
                             Weight = 0
                         },
                         new
                         {
                             Id = 227,
-                            InStock = 11,
-                            Price = 1638m,
+                            InStock = 13,
+                            Price = 1901m,
                             ProductId = 167,
                             Weight = 0
                         },
                         new
                         {
                             Id = 228,
-                            InStock = 77,
-                            Price = 1854m,
+                            InStock = 11,
+                            Price = 848m,
                             ProductId = 168,
                             Weight = 0
                         },
                         new
                         {
                             Id = 229,
-                            InStock = 41,
-                            Price = 979m,
+                            InStock = 44,
+                            Price = 267m,
                             ProductId = 169,
                             Weight = 0
                         },
                         new
                         {
                             Id = 230,
-                            InStock = 0,
-                            Price = 305m,
+                            InStock = 43,
+                            Price = 448m,
                             ProductId = 170,
                             Weight = 0
                         },
                         new
                         {
                             Id = 231,
-                            InStock = 48,
-                            Price = 590m,
+                            InStock = 85,
+                            Price = 1751m,
                             ProductId = 171,
                             Weight = 0
                         },
                         new
                         {
                             Id = 232,
-                            InStock = 53,
-                            Price = 1295m,
+                            InStock = 13,
+                            Price = 1174m,
                             ProductId = 172,
                             Weight = 0
                         },
                         new
                         {
                             Id = 233,
-                            InStock = 6,
-                            Price = 501m,
+                            InStock = 56,
+                            Price = 1329m,
                             ProductId = 173,
                             Weight = 0
                         },
                         new
                         {
                             Id = 234,
-                            InStock = 96,
-                            Price = 1788m,
+                            InStock = 81,
+                            Price = 427m,
                             ProductId = 174,
                             Weight = 0
                         },
                         new
                         {
                             Id = 235,
-                            InStock = 46,
-                            Price = 366m,
+                            InStock = 31,
+                            Price = 851m,
                             ProductId = 175,
                             Weight = 0
                         },
                         new
                         {
                             Id = 236,
-                            InStock = 13,
-                            Price = 452m,
+                            InStock = 34,
+                            Price = 755m,
                             ProductId = 176,
                             Weight = 0
                         },
                         new
                         {
                             Id = 237,
-                            InStock = 48,
-                            Price = 736m,
+                            InStock = 50,
+                            Price = 1804m,
                             ProductId = 177,
                             Weight = 0
                         },
                         new
                         {
                             Id = 238,
-                            InStock = 96,
-                            Price = 794m,
+                            InStock = 56,
+                            Price = 778m,
                             ProductId = 178,
                             Weight = 0
                         },
                         new
                         {
                             Id = 239,
-                            InStock = 24,
-                            Price = 1724m,
+                            InStock = 77,
+                            Price = 1505m,
                             ProductId = 179,
                             Weight = 0
                         },
                         new
                         {
                             Id = 240,
-                            InStock = 48,
-                            Price = 1530m,
+                            InStock = 41,
+                            Price = 638m,
                             ProductId = 180,
                             Weight = 0
                         });
@@ -5056,22 +5048,22 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("UserAddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(60)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("UserTelephone")
                         .HasMaxLength(25)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
 
@@ -5079,7 +5071,8 @@ namespace Birdy.Server.Migrations
                         .IsUnique();
 
                     b.HasIndex("UserTelephone")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserTelephone] IS NOT NULL");
 
                     b.ToTable("Profiles");
 
@@ -5152,7 +5145,7 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<short>("Value")
                         .HasColumnType("smallint");
@@ -5173,13 +5166,13 @@ namespace Birdy.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("ReviewDate")
                         .HasColumnType("date");
@@ -5193,403 +5186,403 @@ namespace Birdy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            ProductId = 112,
-                            UserId = 4,
+                            ProductId = 109,
+                            UserId = 5,
                             Comment = "Производителю рекомендовал бы применять более эластичный материал.",
                             Id = 1,
-                            ReviewDate = new DateTime(2018, 9, 28, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ReviewDate = new DateTime(2019, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 166,
+                            ProductId = 129,
                             UserId = 6,
                             Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
                             Id = 2,
-                            ReviewDate = new DateTime(2021, 5, 14, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ReviewDate = new DateTime(2017, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 149,
-                            UserId = 5,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 3,
-                            ReviewDate = new DateTime(2021, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 117,
-                            UserId = 5,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 4,
-                            ReviewDate = new DateTime(2017, 3, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 115,
-                            UserId = 3,
-                            Comment = "Отличное качество, синицы оценили!",
-                            Id = 5,
-                            ReviewDate = new DateTime(2020, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 114,
-                            UserId = 2,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 6,
-                            ReviewDate = new DateTime(2021, 12, 8, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 148,
-                            UserId = 2,
-                            Comment = "Отличное качество, синицы оценили!",
-                            Id = 7,
-                            ReviewDate = new DateTime(2018, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 89,
-                            UserId = 5,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 8,
-                            ReviewDate = new DateTime(2021, 12, 28, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 171,
-                            UserId = 5,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 9,
-                            ReviewDate = new DateTime(2021, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 38,
+                            ProductId = 40,
                             UserId = 6,
-                            Comment = "Отличное качество, синицы оценили!",
-                            Id = 10,
-                            ReviewDate = new DateTime(2017, 1, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 91,
-                            UserId = 2,
                             Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 11,
-                            ReviewDate = new DateTime(2021, 5, 14, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 3,
+                            ReviewDate = new DateTime(2019, 6, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 177,
+                            ProductId = 43,
                             UserId = 4,
                             Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 12,
-                            ReviewDate = new DateTime(2018, 1, 27, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 4,
+                            ReviewDate = new DateTime(2019, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 180,
-                            UserId = 2,
-                            Comment = "Отличное качество, синицы оценили!",
-                            Id = 13,
-                            ReviewDate = new DateTime(2017, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ProductId = 6,
+                            UserId = 4,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 5,
+                            ReviewDate = new DateTime(2018, 1, 17, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 64,
-                            UserId = 3,
-                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
-                            Id = 14,
-                            ReviewDate = new DateTime(2018, 1, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 138,
-                            UserId = 2,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 15,
+                            ProductId = 157,
+                            UserId = 4,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 6,
                             ReviewDate = new DateTime(2021, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 77,
-                            UserId = 6,
+                            ProductId = 125,
+                            UserId = 3,
                             Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
-                            Id = 16,
-                            ReviewDate = new DateTime(2019, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 7,
+                            ReviewDate = new DateTime(2018, 8, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 37,
-                            UserId = 5,
-                            Comment = "Отличное качество, синицы оценили!",
-                            Id = 17,
-                            ReviewDate = new DateTime(2018, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ProductId = 118,
+                            UserId = 7,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 8,
+                            ReviewDate = new DateTime(2019, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 1,
+                            ProductId = 83,
+                            UserId = 4,
+                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
+                            Id = 9,
+                            ReviewDate = new DateTime(2019, 2, 28, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 102,
                             UserId = 5,
                             Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 18,
-                            ReviewDate = new DateTime(2020, 6, 8, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 10,
+                            ReviewDate = new DateTime(2018, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 17,
-                            UserId = 4,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 19,
-                            ReviewDate = new DateTime(2019, 7, 17, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 116,
-                            UserId = 3,
+                            ProductId = 164,
+                            UserId = 6,
                             Comment = "Отличное качество, синицы оценили!",
-                            Id = 20,
-                            ReviewDate = new DateTime(2018, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 11,
+                            ReviewDate = new DateTime(2020, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 56,
-                            UserId = 3,
+                            ProductId = 113,
+                            UserId = 7,
                             Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 21,
-                            ReviewDate = new DateTime(2019, 1, 27, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 12,
+                            ReviewDate = new DateTime(2020, 11, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 28,
+                            ProductId = 21,
+                            UserId = 6,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 13,
+                            ReviewDate = new DateTime(2019, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 30,
+                            UserId = 4,
+                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
+                            Id = 14,
+                            ReviewDate = new DateTime(2017, 2, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 14,
                             UserId = 5,
                             Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 22,
-                            ReviewDate = new DateTime(2018, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 15,
+                            ReviewDate = new DateTime(2017, 6, 14, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 114,
-                            UserId = 6,
-                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
-                            Id = 23,
-                            ReviewDate = new DateTime(2021, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 80,
+                            ProductId = 155,
                             UserId = 7,
                             Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
-                            Id = 24,
-                            ReviewDate = new DateTime(2017, 6, 7, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 16,
+                            ReviewDate = new DateTime(2019, 12, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 107,
+                            ProductId = 148,
+                            UserId = 6,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 17,
+                            ReviewDate = new DateTime(2021, 2, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 7,
+                            UserId = 4,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 18,
+                            ReviewDate = new DateTime(2019, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 66,
+                            UserId = 6,
+                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
+                            Id = 19,
+                            ReviewDate = new DateTime(2021, 6, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 4,
+                            UserId = 5,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 20,
+                            ReviewDate = new DateTime(2019, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 22,
+                            UserId = 4,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 21,
+                            ReviewDate = new DateTime(2021, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 31,
                             UserId = 3,
                             Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 25,
-                            ReviewDate = new DateTime(2020, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 106,
-                            UserId = 4,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 26,
-                            ReviewDate = new DateTime(2020, 1, 27, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 162,
-                            UserId = 7,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 27,
-                            ReviewDate = new DateTime(2021, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 22,
+                            ReviewDate = new DateTime(2021, 10, 8, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             ProductId = 53,
-                            UserId = 3,
+                            UserId = 4,
                             Comment = "Отличное качество, синицы оценили!",
-                            Id = 28,
-                            ReviewDate = new DateTime(2020, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 23,
+                            ReviewDate = new DateTime(2020, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 140,
-                            UserId = 5,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 29,
-                            ReviewDate = new DateTime(2020, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 119,
-                            UserId = 2,
+                            ProductId = 146,
+                            UserId = 3,
                             Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 30,
-                            ReviewDate = new DateTime(2020, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Id = 24,
+                            ReviewDate = new DateTime(2019, 6, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 58,
+                            UserId = 5,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 25,
+                            ReviewDate = new DateTime(2020, 11, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             ProductId = 140,
+                            UserId = 7,
+                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
+                            Id = 26,
+                            ReviewDate = new DateTime(2019, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 106,
                             UserId = 6,
                             Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
+                            Id = 27,
+                            ReviewDate = new DateTime(2020, 6, 7, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 77,
+                            UserId = 7,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 28,
+                            ReviewDate = new DateTime(2019, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 8,
+                            UserId = 4,
+                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
+                            Id = 29,
+                            ReviewDate = new DateTime(2019, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 38,
+                            UserId = 4,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 30,
+                            ReviewDate = new DateTime(2019, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 25,
+                            UserId = 2,
+                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
                             Id = 31,
-                            ReviewDate = new DateTime(2017, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ReviewDate = new DateTime(2020, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 150,
+                            UserId = 4,
+                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
+                            Id = 32,
+                            ReviewDate = new DateTime(2020, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 104,
+                            UserId = 6,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 33,
+                            ReviewDate = new DateTime(2020, 11, 17, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 21,
+                            UserId = 7,
+                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
+                            Id = 34,
+                            ReviewDate = new DateTime(2017, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 175,
+                            UserId = 5,
+                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
+                            Id = 35,
+                            ReviewDate = new DateTime(2019, 9, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 137,
+                            UserId = 4,
+                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
+                            Id = 36,
+                            ReviewDate = new DateTime(2021, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 72,
+                            UserId = 2,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 37,
+                            ReviewDate = new DateTime(2017, 6, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             ProductId = 49,
-                            UserId = 4,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 32,
-                            ReviewDate = new DateTime(2021, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 62,
-                            UserId = 6,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 33,
-                            ReviewDate = new DateTime(2017, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 168,
-                            UserId = 6,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 34,
-                            ReviewDate = new DateTime(2017, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 133,
-                            UserId = 2,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 35,
-                            ReviewDate = new DateTime(2021, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 19,
-                            UserId = 4,
-                            Comment = "Отличное качество, синицы оценили!",
-                            Id = 36,
-                            ReviewDate = new DateTime(2018, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 46,
-                            UserId = 2,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 37,
-                            ReviewDate = new DateTime(2017, 12, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 125,
                             UserId = 7,
                             Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
                             Id = 38,
-                            ReviewDate = new DateTime(2019, 3, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ReviewDate = new DateTime(2017, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 178,
+                            UserId = 7,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 39,
+                            ReviewDate = new DateTime(2020, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 171,
+                            UserId = 2,
+                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
+                            Id = 40,
+                            ReviewDate = new DateTime(2018, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 166,
+                            UserId = 7,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 41,
+                            ReviewDate = new DateTime(2020, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             ProductId = 180,
-                            UserId = 5,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 39,
-                            ReviewDate = new DateTime(2018, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 116,
-                            UserId = 5,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 40,
-                            ReviewDate = new DateTime(2021, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 117,
-                            UserId = 4,
-                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
-                            Id = 41,
-                            ReviewDate = new DateTime(2017, 8, 14, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 126,
-                            UserId = 2,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 42,
-                            ReviewDate = new DateTime(2017, 7, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 149,
                             UserId = 7,
-                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
-                            Id = 43,
-                            ReviewDate = new DateTime(2017, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
+                            Id = 42,
+                            ReviewDate = new DateTime(2021, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ProductId = 173,
-                            UserId = 2,
+                            ProductId = 152,
+                            UserId = 4,
                             Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
+                            Id = 43,
+                            ReviewDate = new DateTime(2020, 1, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 73,
+                            UserId = 5,
+                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
                             Id = 44,
-                            ReviewDate = new DateTime(2020, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ReviewDate = new DateTime(2017, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 8,
+                            UserId = 6,
+                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
+                            Id = 45,
+                            ReviewDate = new DateTime(2019, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 166,
+                            UserId = 5,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 46,
+                            ReviewDate = new DateTime(2018, 2, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 69,
+                            UserId = 7,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 47,
+                            ReviewDate = new DateTime(2018, 5, 12, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 4,
+                            UserId = 4,
+                            Comment = "Отличное качество, синицы оценили!",
+                            Id = 48,
+                            ReviewDate = new DateTime(2021, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            ProductId = 41,
+                            UserId = 6,
+                            Comment = "Производителю рекомендовал бы применять более эластичный материал.",
+                            Id = 49,
+                            ReviewDate = new DateTime(2018, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             ProductId = 84,
-                            UserId = 4,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 45,
-                            ReviewDate = new DateTime(2019, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 56,
                             UserId = 2,
-                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
-                            Id = 46,
-                            ReviewDate = new DateTime(2021, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 155,
-                            UserId = 4,
                             Comment = "Отличное качество, синицы оценили!",
-                            Id = 47,
-                            ReviewDate = new DateTime(2017, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 165,
-                            UserId = 2,
-                            Comment = "Прекрасное приобретение, ни сколько не жалею о покупке, птицы довольны.",
-                            Id = 48,
-                            ReviewDate = new DateTime(2021, 2, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 100,
-                            UserId = 4,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
-                            Id = 49,
-                            ReviewDate = new DateTime(2020, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ProductId = 155,
-                            UserId = 3,
-                            Comment = "Доверились отзывам и купили, очень надежный производитель. Никаких существенных минусов не заметили, рекомендую!",
                             Id = 50,
-                            ReviewDate = new DateTime(2019, 12, 14, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ReviewDate = new DateTime(2020, 4, 26, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -5599,12 +5592,12 @@ namespace Birdy.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar");
+                        .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
 

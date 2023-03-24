@@ -42,6 +42,7 @@ public class ApplicationDatabaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
+        //options.UseSqlServer("Server=.\\SQLEXPRESS;Database=birdydb;Trusted_Connection=True;TrustServerCertificate=true;");
         options.UseNpgsql("Server=46.19.65.63;Port=5432;Database=default_db;User Id=gen_user;Password=hXigb4MpThLd;");
         //options.UseNpgsql("Host=localhost;Port=5000;Database=birdydb;Username=postgres;Password=12345678");
         //options.UseNpgsql("Server=localhost;Port=32768;Database=birdy;User Id=postgres;Password=postgrespw;");
@@ -250,10 +251,10 @@ public class ApplicationDatabaseContext : DbContext
         });
         modelBuilder.Entity<Order>().Property(o => o.OrderDate).HasColumnType("date");
         modelBuilder.Entity<Order>().Property(o => o.DeliveryDate).HasColumnType("date");
-        modelBuilder.Entity<Order>().Property(o => o.Comment).HasColumnType("varchar").HasMaxLength(250);
+        modelBuilder.Entity<Order>().Property(o => o.Comment).HasColumnType("nvarchar(max)").HasMaxLength(250);
         modelBuilder.Entity<Order>().Property(o => o.Price).HasColumnType("money");
-        modelBuilder.Entity<Order>().Property(o => o.IsPaid).HasColumnType("boolean").IsRequired();
-        modelBuilder.Entity<Order>().Property(o => o.Status).HasColumnType("varchar(25)");
+        modelBuilder.Entity<Order>().Property(o => o.IsPaid).HasColumnType("bool").IsRequired();
+        modelBuilder.Entity<Order>().Property(o => o.Status).HasColumnType("nvarchar(25)");
 
         #endregion Заказ
 
